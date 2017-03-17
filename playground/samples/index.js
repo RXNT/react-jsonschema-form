@@ -14,6 +14,7 @@ import files from "./files";
 import single from "./single";
 import customArray from "./customArray";
 import fieldTemplate from "./fieldTemplate";
+import containers from "./containers";
 
 export const samples = {
   Simple: simple,
@@ -32,4 +33,5 @@ export const samples = {
   Single: single,
   "Custom Array": customArray,
   "Field Template": fieldTemplate,
+  Containers: containers,
 };
