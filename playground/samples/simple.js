@@ -31,6 +31,12 @@ module.exports = {
   uiSchema: {
     firstName: {
       "ui:autofocus": true,
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
+    },
+    lastName: {
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     age: {
       "ui:widget": "updown",

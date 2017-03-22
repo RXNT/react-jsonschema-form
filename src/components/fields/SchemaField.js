@@ -32,13 +32,14 @@ function getFieldComponent(schema, uiSchema, fields) {
 }
 
 function Label(props) {
-  const { label, required, id } = props;
+  const { label, required, id, titleClassNames } = props;
   if (!label) {
     // See #312: Ensure compatibility with old versions of React.
     return <div />;
   }
+
   return (
-    <label className="control-label" htmlFor={id}>
+    <label className={"control-label" + " " + titleClassNames} htmlFor={id}>
       {required ? label + REQUIRED_FIELD_SYMBOL : label}
     </label>
   );
@@ -85,14 +86,16 @@ function DefaultTemplate(props) {
     hidden,
     required,
     displayLabel,
+    titleClassNames,
+    controlClassNames,
   } = props;
   if (hidden) {
     return children;
   }
 
   return (
-    <div className={classNames}>
-      {displayLabel && <Label label={label} required={required} id={id} />}
+    <div className={"row " + classNames}>
+      {displayLabel && <Label label={label} titleClassNames={titleClassNames} required={required} id={id} />}
       {displayLabel && description ? description : null}
       {children}
       {errors}
@@ -105,6 +108,8 @@ if (process.env.NODE_ENV !== "production") {
   DefaultTemplate.propTypes = {
     id: PropTypes.string,
     classNames: PropTypes.string,
+    titleClassNames: PropTypes.string,
+    controlClassNames: PropTypes.string,
     label: PropTypes.string,
     children: PropTypes.node.isRequired,
     errors: PropTypes.element,
@@ -144,6 +149,21 @@ function SchemaFieldRender(props) {
   const readonly = Boolean(props.readonly || uiSchema["ui:readonly"]);
   const autofocus = Boolean(props.autofocus || uiSchema["ui:autofocus"]);
 
+  let titleClassNames = "";
+  let controlClassNames = "";
+
+  if(uiSchema["ui:titleClassNames"] !== null && uiSchema["ui:titleClassNames"] !== undefined) {
+    titleClassNames = uiSchema["ui:titleClassNames"]
+                      .join(" ")
+                      .trim();
+  }
+
+  if(uiSchema["ui:controlClassNames"] !== null && uiSchema["ui:controlClassNames"] !== undefined) {
+    controlClassNames = uiSchema["ui:controlClassNames"]
+                        .join(" ")
+                        .trim();
+  }
+
   if (Object.keys(schema).length === 0) {
     // See #312: Ensure compatibility with old versions of React.
     return <div />;
@@ -176,6 +196,8 @@ function SchemaFieldRender(props) {
       autofocus={autofocus}
       errorSchema={fieldErrorSchema}
       formContext={formContext}
+      titleClassNames={titleClassNames}
+      controlClassNames={controlClassNames}
     />
   );
 
@@ -220,6 +242,8 @@ function SchemaFieldRender(props) {
     fields,
     schema,
     uiSchema,
+    titleClassNames,
+    controlClassNames,
   };
 
   return <FieldTemplate {...fieldProps}>{field}</FieldTemplate>;
@@ -248,6 +272,8 @@ SchemaField.defaultProps = {
   disabled: false,
   readonly: false,
   autofocus: false,
+  titleClassNames: "",
+  controlClassNames: "",
 };
 
 if (process.env.NODE_ENV !== "production") {

@@ -12,15 +12,23 @@ function BaseInput(props) {
     schema,
     formContext,
     registry,
+    controlClassNames,
     ...inputProps
   } = props;
+
   const _onChange = ({ target: { value } }) => {
     return props.onChange(value === "" ? undefined : value);
   };
+
+  let classNames = "form-control"
+  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+    classNames = controlClassNames;
+  }
+
   return (
     <input
       {...inputProps}
-      className="form-control"
+      className={classNames}
       readOnly={readonly}
       autoFocus={autofocus}
       value={value == null ? "" : value}
@@ -36,6 +44,7 @@ BaseInput.defaultProps = {
   disabled: false,
   readonly: false,
   autofocus: false,
+  controlClassNames: "",
 };
 
 if (process.env.NODE_ENV !== "production") {
@@ -49,6 +58,7 @@ if (process.env.NODE_ENV !== "production") {
     autofocus: PropTypes.bool,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
+    controlClassNames: PropTypes.string,
   };
 }
 

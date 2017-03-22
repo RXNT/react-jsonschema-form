@@ -21,7 +21,10 @@ function StringField(props) {
     registry,
     onChange,
     onBlur,
+    titleClassNames,
+    controlClassNames,
   } = props;
+
   const { title, format } = schema;
   const { widgets, formContext } = registry;
   const enumOptions = Array.isArray(schema.enum) && optionsList(schema);
@@ -29,6 +32,7 @@ function StringField(props) {
   const { widget = defaultWidget, placeholder = "", ...options } = getUiOptions(
     uiSchema
   );
+
   const Widget = getWidget(schema, widget, widgets);
 
   return (
@@ -47,6 +51,8 @@ function StringField(props) {
       autofocus={autofocus}
       registry={registry}
       placeholder={placeholder}
+      titleClassNames={titleClassNames}
+      controlClassNames={controlClassNames}
     />
   );
 }
@@ -75,6 +81,8 @@ if (process.env.NODE_ENV !== "production") {
     disabled: PropTypes.bool,
     readonly: PropTypes.bool,
     autofocus: PropTypes.bool,
+    titleClassNames: PropTypes.string,
+    controlClassNames: PropTypes.string,
   };
 }
 
@@ -84,6 +92,8 @@ StringField.defaultProps = {
   disabled: false,
   readonly: false,
   autofocus: false,
+  titleClassNames: "",
+  controlClassNames: "",
 };
 
 export default StringField;

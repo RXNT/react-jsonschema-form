@@ -301,15 +301,10 @@ class App extends Component {
 
   load = data => {
     // Reset the ArrayFieldTemplate whenever you load new data
-    const { ArrayFieldTemplate, CustomFieldTemplate } = data;
+    const { ArrayFieldTemplate } = data;
     // force resetting form component instance
     this.setState({ form: false }, _ =>
-      this.setState({
-        ...data,
-        form: true,
-        ArrayFieldTemplate,
-        CustomFieldTemplate,
-      }));
+      this.setState({ ...data, form: true, ArrayFieldTemplate }));
   };
 
   onSchemaEdited = schema => this.setState({ schema });
@@ -341,7 +336,6 @@ class App extends Component {
       editor,
       ArrayFieldTemplate,
       transformErrors,
-      CustomFieldTemplate,
     } = this.state;
 
     return (
@@ -408,7 +402,6 @@ class App extends Component {
                 console.log(`Touched ${id} with value ${value}`)}
               transformErrors={transformErrors}
               onError={log("errors")}
-              FieldTemplate={CustomFieldTemplate}
             />}
         </div>
       </div>
