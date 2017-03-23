@@ -15,6 +15,7 @@ function deselectValue(value, selected) {
 function CheckboxesWidget(props) {
   const { id, disabled, options, value, autofocus, onChange } = props;
   const { enumOptions, inline } = options;
+
   return (
     <div className="checkboxes" id={id}>
       {enumOptions.map((option, index) => {

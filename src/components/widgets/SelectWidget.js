@@ -46,14 +46,21 @@ function SelectWidget(props) {
     onChange,
     onBlur,
     placeholder,
+    controlClassNames,
   } = props;
   const { enumOptions } = options;
   const emptyValue = multiple ? [] : "";
+
+  let classNames = "form-control"
+  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+    classNames = controlClassNames;
+  }
+
   return (
     <select
       id={id}
       multiple={multiple}
-      className="form-control"
+      className={classNames}
       value={typeof value === "undefined" ? emptyValue : value}
       required={required}
       disabled={disabled}

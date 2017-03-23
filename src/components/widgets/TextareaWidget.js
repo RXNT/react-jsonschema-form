@@ -12,14 +12,21 @@ function TextareaWidget(props) {
     autofocus,
     onChange,
     onBlur,
+    controlClassNames,
   } = props;
   const _onChange = ({ target: { value } }) => {
     return onChange(value === "" ? undefined : value);
   };
+
+  let classNames = "form-control"
+  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+    classNames = controlClassNames;
+  }
+
   return (
     <textarea
       id={id}
-      className="form-control"
+      className={classNames}
       value={typeof value === "undefined" ? "" : value}
       placeholder={placeholder}
       required={required}

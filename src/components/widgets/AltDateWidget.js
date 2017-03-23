@@ -26,14 +26,21 @@ function DateElement(props) {
     autofocus,
     registry,
     onBlur,
+    controlClassNames,
   } = props;
+
+  let classNames = "form-control"
+  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+    classNames = controlClassNames;
+  }
+
   const id = rootId + "_" + type;
   const { SelectWidget } = registry.widgets;
   return (
     <SelectWidget
       schema={{ type: "integer" }}
       id={id}
-      className="form-control"
+      className={classNames}
       options={{ enumOptions: rangeOptions(range[0], range[1]) }}
       placeholder={type}
       value={value}

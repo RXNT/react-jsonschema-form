@@ -92,10 +92,14 @@ class FileWidget extends Component {
   };
 
   render() {
-    const { multiple, id, readonly, disabled, autofocus } = this.props;
+    const { multiple, id, readonly, disabled, autofocus, controlClassNames } = this.props;
     const { filesInfo } = this.state;
+    let classNames = ""
+    if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+      classNames = controlClassNames;
+    }
     return (
-      <div>
+      <div className={classNames}>
         <p>
           <input
             ref={ref => this.inputRef = ref}

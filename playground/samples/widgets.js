@@ -90,30 +90,48 @@ module.exports = {
     boolean: {
       radio: {
         "ui:widget": "radio",
+        "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+        "ui:controlClassNames": ["col-md-6"],
       },
       select: {
         "ui:widget": "select",
+        "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+        "ui:controlClassNames": ["col-md-6"],
       },
     },
     string: {
+      default: {
+        "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+        "ui:controlClassNames": ["col-md-6"],
+      },
       textarea: {
         "ui:widget": "textarea",
+        "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+        "ui:controlClassNames": ["col-md-6"],
         "ui:options": {
           rows: 5,
         },
       },
       color: {
         "ui:widget": "color",
+        "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+        "ui:controlClassNames": ["col-md-6"],
       },
     },
     secret: {
       "ui:widget": "hidden",
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     disabled: {
       "ui:disabled": true,
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     readonly: {
       "ui:readonly": true,
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     widgetOptions: {
       "ui:widget": ({ value, onChange, options }) => {

@@ -43,10 +43,14 @@ module.exports = {
     },
     bio: {
       "ui:widget": "textarea",
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     password: {
       "ui:widget": "password",
       "ui:help": "Hint: Make it strong!",
+      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
+      "ui:controlClassNames": ["col-md-6"],
     },
     date: {
       "ui:widget": "alt-datetime",
