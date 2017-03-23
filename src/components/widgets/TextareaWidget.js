@@ -12,15 +12,16 @@ function TextareaWidget(props) {
     autofocus,
     onChange,
     onBlur,
-    controlClassNames,
   } = props;
   const _onChange = ({ target: { value } }) => {
     return onChange(value === "" ? undefined : value);
   };
 
   let classNames = "form-control"
-  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
-    classNames = controlClassNames;
+  if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+    classNames = options.controlClassNames
+                        .join(" ")
+                        .trim();
   }
 
   return (
@@ -52,6 +53,8 @@ if (process.env.NODE_ENV !== "production") {
     placeholder: PropTypes.string,
     options: PropTypes.shape({
       rows: PropTypes.number,
+      titleClassNames: PropTypes.string,
+      controlClassNames: PropTypes.string,
     }),
     value: PropTypes.string,
     required: PropTypes.bool,

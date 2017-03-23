@@ -43,6 +43,7 @@ class ObjectField extends Component {
       readonly,
       onBlur,
     } = this.props;
+
     const { definitions, fields, formContext } = this.props.registry;
     const { SchemaField, TitleField, DescriptionField } = fields;
     const schema = retrieveSchema(this.props.schema, definitions);
@@ -78,6 +79,15 @@ class ObjectField extends Component {
             formContext={formContext}
           />}
         {orderedProperties.map((name, index) => {
+          let options = {};
+
+          if(uiSchema !== null && uiSchema !== undefined) {
+            let ctrlUiSchema = uiSchema[name];
+            if(ctrlUiSchema !== null && ctrlUiSchema !== undefined) {
+              options = ctrlUiSchema["ui:options"];
+            }
+          }
+
           return (
             <SchemaField
               key={index}
@@ -93,6 +103,7 @@ class ObjectField extends Component {
               registry={this.props.registry}
               disabled={disabled}
               readonly={readonly}
+              options={options}
             />
           );
         })}

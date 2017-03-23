@@ -26,12 +26,14 @@ function DateElement(props) {
     autofocus,
     registry,
     onBlur,
-    controlClassNames,
+    options,
   } = props;
 
   let classNames = "form-control"
-  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
-    classNames = controlClassNames;
+  if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+    classNames = options.controlClassNames
+                        .join(" ")
+                        .trim();
   }
 
   const id = rootId + "_" + type;
@@ -159,6 +161,10 @@ class AltDateWidget extends Component {
   }
 }
 
+AltDateWidget.defaultProps = {
+  options: {},
+};
+
 if (process.env.NODE_ENV !== "production") {
   AltDateWidget.propTypes = {
     schema: PropTypes.object.isRequired,
@@ -171,6 +177,10 @@ if (process.env.NODE_ENV !== "production") {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     time: PropTypes.bool,
+    options: PropTypes.shape({
+      titleClassNames: PropTypes.string,
+      controlClassNames: PropTypes.string,
+    }),
   };
 }
 

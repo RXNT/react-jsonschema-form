@@ -46,14 +46,15 @@ function SelectWidget(props) {
     onChange,
     onBlur,
     placeholder,
-    controlClassNames,
   } = props;
   const { enumOptions } = options;
   const emptyValue = multiple ? [] : "";
 
   let classNames = "form-control"
-  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
-    classNames = controlClassNames;
+  if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+    classNames = options.controlClassNames
+                  .join(" ")
+                  .trim();
   }
 
   return (
@@ -95,6 +96,8 @@ if (process.env.NODE_ENV !== "production") {
     id: PropTypes.string.isRequired,
     options: PropTypes.shape({
       enumOptions: PropTypes.array,
+      titleClassNames: PropTypes.string,
+      controlClassNames: PropTypes.string,
     }).isRequired,
     value: PropTypes.any,
     required: PropTypes.bool,

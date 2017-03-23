@@ -31,26 +31,38 @@ module.exports = {
   uiSchema: {
     firstName: {
       "ui:autofocus": true,
-      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
-      "ui:controlClassNames": ["col-md-6"],
+      "ui:options": {
+        "titleClassNames": ["text-uppercase", "col-md-3"],
+        "controlClassNames": ["col-md-6"],
+      },
     },
     lastName: {
-      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
-      "ui:controlClassNames": ["col-md-6"],
+      "ui:options": {
+        "titleClassNames": ["text-uppercase", "col-md-3"],
+        "controlClassNames": ["col-md-6"],
+      },
     },
     age: {
       "ui:widget": "updown",
+      "ui:options": {
+        "titleClassNames": ["text-uppercase", "col-md-3"],
+        "controlClassNames": ["col-md-6"],
+      },
     },
     bio: {
       "ui:widget": "textarea",
-      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
-      "ui:controlClassNames": ["col-md-6"],
+      "ui:options": {
+        "titleClassNames": ["text-uppercase", "col-md-3"],
+        "controlClassNames": ["col-md-6"],
+      },
     },
     password: {
       "ui:widget": "password",
       "ui:help": "Hint: Make it strong!",
-      "ui:titleClassNames": ["text-uppercase", "col-md-3"],
-      "ui:controlClassNames": ["col-md-6"],
+      "ui:options": {
+        "titleClassNames": ["text-uppercase", "col-md-3"],
+        "controlClassNames": ["col-md-6"],
+      },
     },
     date: {
       "ui:widget": "alt-datetime",

@@ -32,14 +32,25 @@ function getFieldComponent(schema, uiSchema, fields) {
 }
 
 function Label(props) {
-  const { label, required, id, titleClassNames } = props;
+  const { label, required, id, uiOptions } = props;
   if (!label) {
     // See #312: Ensure compatibility with old versions of React.
     return <div />;
   }
 
+  const options = uiOptions.options;
+  let classNames = "";
+
+  if(options !== null && options !== undefined) {
+    if(options.titleClassNames !== "" && options.titleClassNames !== null && options.titleClassNames !== undefined) {
+      classNames = options.titleClassNames
+                    .join(" ")
+                    .trim();
+    }
+  }
+  
   return (
-    <label className={"control-label" + " " + titleClassNames} htmlFor={id}>
+    <label className={"control-label" + " " + classNames} htmlFor={id}>
       {required ? label + REQUIRED_FIELD_SYMBOL : label}
     </label>
   );
@@ -86,8 +97,7 @@ function DefaultTemplate(props) {
     hidden,
     required,
     displayLabel,
-    titleClassNames,
-    controlClassNames,
+    options,
   } = props;
   if (hidden) {
     return children;
@@ -95,7 +105,7 @@ function DefaultTemplate(props) {
 
   return (
     <div className={"row " + classNames}>
-      {displayLabel && <Label label={label} titleClassNames={titleClassNames} required={required} id={id} />}
+      {displayLabel && <Label label={label} uiOptions={options} required={required} id={id} />}
       {displayLabel && description ? description : null}
       {children}
       {errors}
@@ -108,8 +118,7 @@ if (process.env.NODE_ENV !== "production") {
   DefaultTemplate.propTypes = {
     id: PropTypes.string,
     classNames: PropTypes.string,
-    titleClassNames: PropTypes.string,
-    controlClassNames: PropTypes.string,
+    options: PropTypes.object,
     label: PropTypes.string,
     children: PropTypes.node.isRequired,
     errors: PropTypes.element,
@@ -135,7 +144,7 @@ DefaultTemplate.defaultProps = {
 };
 
 function SchemaFieldRender(props) {
-  const { uiSchema, errorSchema, idSchema, name, required, registry } = props;
+  const { uiSchema, errorSchema, idSchema, name, required, registry, options } = props;
   const {
     definitions,
     fields,
@@ -148,21 +157,6 @@ function SchemaFieldRender(props) {
   const disabled = Boolean(props.disabled || uiSchema["ui:disabled"]);
   const readonly = Boolean(props.readonly || uiSchema["ui:readonly"]);
   const autofocus = Boolean(props.autofocus || uiSchema["ui:autofocus"]);
-
-  let titleClassNames = "";
-  let controlClassNames = "";
-
-  if(uiSchema["ui:titleClassNames"] !== null && uiSchema["ui:titleClassNames"] !== undefined) {
-    titleClassNames = uiSchema["ui:titleClassNames"]
-                      .join(" ")
-                      .trim();
-  }
-
-  if(uiSchema["ui:controlClassNames"] !== null && uiSchema["ui:controlClassNames"] !== undefined) {
-    controlClassNames = uiSchema["ui:controlClassNames"]
-                        .join(" ")
-                        .trim();
-  }
 
   if (Object.keys(schema).length === 0) {
     // See #312: Ensure compatibility with old versions of React.
@@ -196,8 +190,7 @@ function SchemaFieldRender(props) {
       autofocus={autofocus}
       errorSchema={fieldErrorSchema}
       formContext={formContext}
-      titleClassNames={titleClassNames}
-      controlClassNames={controlClassNames}
+      options={options}
     />
   );
 
@@ -209,14 +202,13 @@ function SchemaFieldRender(props) {
   const help = uiSchema["ui:help"];
   const hidden = uiSchema["ui:widget"] === "hidden";
   const classNames = [
-    "form-group",
-    "field",
-    `field-${type}`,
-    errors && errors.length > 0 ? "field-error has-error has-danger" : "",
-    uiSchema.classNames,
-  ]
-    .join(" ")
-    .trim();
+                        "form-group",
+                        "field",
+                        `field-${type}`,
+                        errors && errors.length > 0 ? "field-error has-error has-danger" : "",
+                        uiSchema.classNames,
+                      ].join(" ")
+                        .trim();
 
   const fieldProps = {
     description: (
@@ -242,8 +234,7 @@ function SchemaFieldRender(props) {
     fields,
     schema,
     uiSchema,
-    titleClassNames,
-    controlClassNames,
+    options: {options},
   };
 
   return <FieldTemplate {...fieldProps}>{field}</FieldTemplate>;
@@ -272,8 +263,7 @@ SchemaField.defaultProps = {
   disabled: false,
   readonly: false,
   autofocus: false,
-  titleClassNames: "",
-  controlClassNames: "",
+  options: {},
 };
 
 if (process.env.NODE_ENV !== "production") {

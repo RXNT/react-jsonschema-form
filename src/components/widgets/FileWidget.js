@@ -92,11 +92,13 @@ class FileWidget extends Component {
   };
 
   render() {
-    const { multiple, id, readonly, disabled, autofocus, controlClassNames } = this.props;
+    const { multiple, id, readonly, disabled, autofocus, options } = this.props;
     const { filesInfo } = this.state;
     let classNames = ""
-    if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
-      classNames = controlClassNames;
+    if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+      classNames = options.controlClassNames
+                          .join(" ")
+                          .trim();
     }
     return (
       <div className={classNames}>
@@ -120,6 +122,7 @@ class FileWidget extends Component {
 
 FileWidget.defaultProps = {
   autofocus: false,
+  options: {},
 };
 
 if (process.env.NODE_ENV !== "production") {
@@ -129,6 +132,10 @@ if (process.env.NODE_ENV !== "production") {
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.string),
     ]),
+    options: PropTypes.shape({
+      titleClassNames: PropTypes.string,
+      controlClassNames: PropTypes.string,
+    }),
     autofocus: PropTypes.bool,
   };
 }

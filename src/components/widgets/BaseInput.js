@@ -12,7 +12,6 @@ function BaseInput(props) {
     schema,
     formContext,
     registry,
-    controlClassNames,
     ...inputProps
   } = props;
 
@@ -21,8 +20,10 @@ function BaseInput(props) {
   };
 
   let classNames = "form-control"
-  if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
-    classNames = controlClassNames;
+  if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+    classNames = options.controlClassNames
+                        .join(" ")
+                        .trim();
   }
 
   return (
@@ -44,7 +45,7 @@ BaseInput.defaultProps = {
   disabled: false,
   readonly: false,
   autofocus: false,
-  controlClassNames: "",
+  options: {},
 };
 
 if (process.env.NODE_ENV !== "production") {
@@ -58,7 +59,10 @@ if (process.env.NODE_ENV !== "production") {
     autofocus: PropTypes.bool,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
-    controlClassNames: PropTypes.string,
+    options: PropTypes.shape({
+      titleClassNames: PropTypes.string,
+      controlClassNames: PropTypes.string,
+    }),
   };
 }
 
