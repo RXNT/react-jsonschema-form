@@ -93,6 +93,7 @@ module.exports = {
         "ui:options": {
           "titleClassNames": ["text-uppercase", "col-md-3"],
           "controlClassNames": ["col-md-6"],
+          "inline": true,
         },
       },
       select: {
@@ -149,10 +150,17 @@ module.exports = {
     },
     widgetOptions: {
       "ui:widget": ({ value, onChange, options }) => {
-        const { backgroundColor } = options;
+        const { backgroundColor, controlClassNames } = options;
+        let classNames = "form-control";
+
+        if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+          classNames = controlClassNames
+                              .join(" ")
+                              .trim();
+        }
         return (
           <input
-            className="form-control"
+            className={classNames}
             onChange={event => onChange(event.target.value)}
             style={{ backgroundColor }}
             value={value}
@@ -161,14 +169,23 @@ module.exports = {
       },
       "ui:options": {
         backgroundColor: "yellow",
+        "titleClassNames": ["text-uppercase", "col-md-6"],
+        "controlClassNames": ["col-md-6"],
       },
     },
     selectWidgetOptions: {
       "ui:widget": ({ value, onChange, options }) => {
-        const { enumOptions, backgroundColor } = options;
+        const { enumOptions, backgroundColor, controlClassNames } = options;
+        let classNames = "form-control";
+
+        if(controlClassNames !== "" && controlClassNames !== null && controlClassNames !== undefined) {
+          classNames = controlClassNames
+                              .join(" ")
+                              .trim();
+        }
         return (
           <select
-            className="form-control"
+            className={classNames}
             style={{ backgroundColor }}
             value={value}
             onChange={event => onChange(event.target.value)}>
@@ -180,6 +197,8 @@ module.exports = {
       },
       "ui:options": {
         backgroundColor: "pink",
+        "titleClassNames": ["text-uppercase", "col-md-8"],
+        "controlClassNames": ["col-md-4"],
       },
     },
   },
