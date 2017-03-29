@@ -48,7 +48,7 @@ function Label(props) {
                     .trim();
     }
   }
-  
+
   return (
     <label className={"control-label" + " " + classNames} htmlFor={id}>
       {required ? label + REQUIRED_FIELD_SYMBOL : label}

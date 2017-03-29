@@ -33,6 +33,7 @@ export default class Form extends Component {
     const state = this.state || {};
     const schema = "schema" in props ? props.schema : this.props.schema;
     const uiSchema = "uiSchema" in props ? props.uiSchema : this.props.uiSchema;
+    const formLayout = "formLayout" in props ? props.formLayout : this.props.formLayout;
     const edit = typeof props.formData !== "undefined";
     const liveValidate = props.liveValidate || this.props.liveValidate;
     const mustValidate = edit && !props.noValidate && liveValidate;
@@ -49,6 +50,7 @@ export default class Form extends Component {
       uiSchema["ui:rootFieldId"],
       definitions
     );
+
     return {
       status: "initial",
       schema,
@@ -58,6 +60,7 @@ export default class Form extends Component {
       edit,
       errors,
       errorSchema,
+      formLayout,
     };
   }
 
@@ -159,7 +162,7 @@ export default class Form extends Component {
       noHtml5Validate,
     } = this.props;
 
-    const { schema, uiSchema, formData, errorSchema, idSchema } = this.state;
+    const { schema, uiSchema, formData, errorSchema, idSchema, formLayout } = this.state;
     const registry = this.getRegistry();
     const _SchemaField = registry.fields.SchemaField;
 
@@ -186,6 +189,7 @@ export default class Form extends Component {
           onChange={this.onChange}
           onBlur={this.onBlur}
           registry={registry}
+          formLayout={formLayout}
           safeRenderCompletion={safeRenderCompletion}
         />
         {children

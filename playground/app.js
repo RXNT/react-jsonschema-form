@@ -18,6 +18,10 @@ import "codemirror/theme/solarized.css";
 import "codemirror/theme/monokai.css";
 import "codemirror/theme/eclipse.css";
 
+import './app.css';
+import "../node_modules/react-grid-layout/css/styles.css";
+import "../node_modules/react-resizable/css/styles.css";
+
 // Patching CodeMirror#componentWillReceiveProps so it's executed synchronously
 // Ref https://github.com/mozilla-services/react-jsonschema-form/issues/174
 Codemirror.prototype.componentWillReceiveProps = function(nextProps) {
@@ -278,7 +282,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate } = samples.Simple;
+    const { schema, uiSchema, formData, validate, formLayout } = samples.Simple;
     this.state = {
       form: false,
       schema,
@@ -288,6 +292,7 @@ class App extends Component {
       editor: "default",
       theme: "default",
       liveValidate: true,
+      formLayout,
     };
   }
 
@@ -300,6 +305,11 @@ class App extends Component {
   }
 
   load = data => {
+
+    if(data.formLayout !== null || data.formLayout !== undefined) {
+      this.setState({ formLayout: null});
+    }
+
     // Reset the ArrayFieldTemplate whenever you load new data
     const { ArrayFieldTemplate } = data;
     // force resetting form component instance
@@ -312,6 +322,8 @@ class App extends Component {
   onUISchemaEdited = uiSchema => this.setState({ uiSchema });
 
   onFormDataEdited = formData => this.setState({ formData });
+
+  onFormLayoutEdited = formLayout => this.setState({ formLayout });
 
   onThemeSelected = (theme, { stylesheet, editor }) => {
     this.setState({ theme, editor: editor ? editor : "default" });
@@ -336,7 +348,14 @@ class App extends Component {
       editor,
       ArrayFieldTemplate,
       transformErrors,
+      formLayout,
     } = this.state;
+
+    let layout = [
+      {i: 'firstName', x: 0, y: 0, w: 1, h: 2, static: true},
+      {i: 'lastName', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
+      {i: 'age', x: 4, y: 0, w: 1, h: 2}
+    ];
 
     return (
       <div className="container-fluid">
@@ -359,15 +378,16 @@ class App extends Component {
             </div>
           </div>
         </div>
-        <div className="col-sm-7">
+        <div className="col-sm-8">
           <Editor
             title="JSONSchema"
             theme={editor}
             code={toJson(schema)}
             onChange={this.onSchemaEdited}
           />
+
           <div className="row">
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <Editor
                 title="UISchema"
                 theme={editor}
@@ -375,7 +395,7 @@ class App extends Component {
                 onChange={this.onUISchemaEdited}
               />
             </div>
-            <div className="col-sm-6">
+            <div className="col-sm-4">
               <Editor
                 title="formData"
                 theme={editor}
@@ -383,9 +403,18 @@ class App extends Component {
                 onChange={this.onFormDataEdited}
               />
             </div>
+            <div className="col-sm-4">
+                {formLayout !== null && formLayout !== undefined && <Editor
+                  title="Form Layout"
+                  theme={editor}
+                  code={toJson(formLayout)}
+                  onChange={this.onFormLayoutEdited}
+                />}
+            </div>
           </div>
+
         </div>
-        <div className="col-sm-5">
+        <div className="col-sm-4">
           {this.state.form &&
             <Form
               ArrayFieldTemplate={ArrayFieldTemplate}
@@ -393,6 +422,7 @@ class App extends Component {
               schema={schema}
               uiSchema={uiSchema}
               formData={formData}
+              formLayout={formLayout}
               onChange={this.onFormDataChange}
               onSubmit={({ formData }) =>
                 console.log("submitted formData", formData)}
@@ -404,6 +434,7 @@ class App extends Component {
               onError={log("errors")}
             />}
         </div>
+
       </div>
     );
   }

@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from "react";
+const ReactGridLayout = require('react-grid-layout');
 
 import {
   orderProperties,
   retrieveSchema,
   getDefaultRegistry,
 } from "../../utils";
+
+let schemaFieldComponents = null;
 
 class ObjectField extends Component {
   static defaultProps = {
@@ -42,6 +45,7 @@ class ObjectField extends Component {
       disabled,
       readonly,
       onBlur,
+      formLayout,
     } = this.props;
 
     const { definitions, fields, formContext } = this.props.registry;
@@ -63,50 +67,62 @@ class ObjectField extends Component {
         </div>
       );
     }
+
+
+    let parsedHtml = null;
+
+    schemaFieldComponents = orderedProperties.map((name, index) => {
+      let options = {};
+
+      if(uiSchema !== null && uiSchema !== undefined) {
+        let ctrlUiSchema = uiSchema[name];
+        if(ctrlUiSchema !== null && ctrlUiSchema !== undefined) {
+          options = ctrlUiSchema["ui:options"];
+        }
+      }
+
+      return <SchemaField
+        key={index}
+        name={name}
+        required={this.isRequired(name)}
+        schema={schema.properties[name]}
+        uiSchema={uiSchema[name]}
+        errorSchema={errorSchema[name]}
+        idSchema={idSchema[name]}
+        formData={formData[name]}
+        onChange={this.onPropertyChange(name)}
+        onBlur={onBlur}
+        registry={this.props.registry}
+        disabled={disabled}
+        readonly={readonly}
+        options={options}
+      />;
+    });
+
+    if(formLayout !== null && formLayout !== undefined) {
+      let propKeys = {};
+
+      orderedProperties.map((name, index) => {
+         propKeys[name] = index;
+      });
+
+      let renderedElements = formLayout.map((frmLayout, index) => {
+        return (<div key={frmLayout.i}>{schemaFieldComponents[propKeys[frmLayout.i]]}</div>);
+      });
+
+      parsedHtml = <ReactGridLayout className='layout' layout={formLayout} cols={12} rowHeight={30} width={1200}>
+                          {renderedElements}
+                      </ReactGridLayout>;
+    } else {
+      parsedHtml = schemaFieldComponents;
+    }
+
     return (
       <fieldset>
-        {title &&
-          <TitleField
-            id={`${idSchema.$id}__title`}
-            title={title}
-            required={required}
-            formContext={formContext}
-          />}
-        {schema.description &&
-          <DescriptionField
-            id={`${idSchema.$id}__description`}
-            description={schema.description}
-            formContext={formContext}
-          />}
-        {orderedProperties.map((name, index) => {
-          let options = {};
 
-          if(uiSchema !== null && uiSchema !== undefined) {
-            let ctrlUiSchema = uiSchema[name];
-            if(ctrlUiSchema !== null && ctrlUiSchema !== undefined) {
-              options = ctrlUiSchema["ui:options"];
-            }
-          }
-
-          return (
-            <SchemaField
-              key={index}
-              name={name}
-              required={this.isRequired(name)}
-              schema={schema.properties[name]}
-              uiSchema={uiSchema[name]}
-              errorSchema={errorSchema[name]}
-              idSchema={idSchema[name]}
-              formData={formData[name]}
-              onChange={this.onPropertyChange(name)}
-              onBlur={onBlur}
-              registry={this.props.registry}
-              disabled={disabled}
-              readonly={readonly}
-              options={options}
-            />
-          );
-        })}
+          <div>
+            {parsedHtml}
+          </div>
       </fieldset>
     );
   }
