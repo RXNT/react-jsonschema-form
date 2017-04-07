@@ -13,6 +13,26 @@ module.exports = {
         type: "string",
         title: "LN",
       },
+      showAge: {
+        type: "boolean",
+        title: "Show Age",
+        eventsHandlers: {
+          onChange : {
+            conditions: [
+              {
+                operator: "==",
+                value : true,
+                displayControls: ["age"]
+              },
+              {
+                operator: "==",
+                value : false,
+                hideControls: ["age"]
+              },
+            ]
+          }
+        }
+      },
       age: {
         type: "integer",
         title: "Age",
@@ -48,6 +68,11 @@ module.exports = {
       "ui:options": {
         "titleClassNames": ["text-uppercase", "col-md-3"],
         "controlClassNames": ["col-md-6"],
+      },
+    },
+    showAge: {
+      "ui:options": {
+        "controlClassNames": ["text-uppercase"],
       },
     },
     age: {
@@ -86,9 +111,10 @@ module.exports = {
   formLayout: [
       {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
       {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
-      {i: 'age', x: 0, y: 1, w: 4, h: 1},
-      {i: 'bio', x: 0, y: 2, w: 4, h: 2},
-      {i: 'password', x: 0, y: 3, w: 3, h: 1},
-      {i: 'listOfStrings', x: 0, y: 4, w: 4, h: 6}
+      {i: 'showAge', x: 0, y: 1, w: 4, h: 1},
+      {i: 'age', x: 0, y: 2, w: 4, h: 1},
+      {i: 'bio', x: 0, y: 3, w: 4, h: 2},
+      {i: 'password', x: 0, y: 4, w: 3, h: 1},
+      {i: 'listOfStrings', x: 0, y: 5, w: 4, h: 6}
   ]
 };
