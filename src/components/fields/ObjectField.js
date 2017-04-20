@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from "react";
 const ReactGridLayout = require('react-grid-layout');
+const _ = require('lodash');
 
 import {
   orderProperties,
@@ -54,7 +55,14 @@ class ObjectField extends Component {
     const title = schema.title === undefined ? name : schema.title;
     let orderedProperties;
     try {
-      const properties = Object.keys(schema.properties);
+      let properties = [];
+      const tempProperties = Object.keys(schema.properties);
+      tempProperties.map((name, index) => {
+        if(schema.properties[name].displayControls) {
+          properties.push(name);
+        }
+      });
+      //const properties = Object.keys(schema.properties);
       orderedProperties = orderProperties(properties, uiSchema["ui:order"]);
     } catch (err) {
       return (
@@ -101,12 +109,21 @@ class ObjectField extends Component {
 
     if(formLayout !== null && formLayout !== undefined) {
       let propKeys = {};
+      let visibleLayouts = [];
 
       orderedProperties.map((name, index) => {
          propKeys[name] = index;
+         let results =_.filter(formLayout, function(frmLayout){
+            return frmLayout.i === name;
+        });
+        visibleLayouts.push(results[0]);
       });
 
-      let renderedElements = formLayout.map((frmLayout, index) => {
+
+
+
+
+      let renderedElements = visibleLayouts.map((frmLayout, index) => {
         return (<div key={frmLayout.i}>{schemaFieldComponents[propKeys[frmLayout.i]]}</div>);
       });
 

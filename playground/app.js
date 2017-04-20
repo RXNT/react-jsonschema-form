@@ -282,7 +282,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout } = samples.Simple;
+    const { schema, uiSchema, formData, validate, formLayout, rules } = samples.Simple;
     this.state = {
       form: false,
       schema,
@@ -293,6 +293,7 @@ class App extends Component {
       theme: "default",
       liveValidate: true,
       formLayout,
+      rules,
     };
   }
 
@@ -308,6 +309,10 @@ class App extends Component {
 
     if(data.formLayout !== null || data.formLayout !== undefined) {
       this.setState({ formLayout: null});
+    }
+
+    if(data.rules !== null || data.rules !== undefined) {
+      this.setState({ rules: null});
     }
 
     // Reset the ArrayFieldTemplate whenever you load new data
@@ -333,9 +338,24 @@ class App extends Component {
     });
   };
 
-  setLiveValidate = ({ formData }) => this.setState({ liveValidate: formData });
+  setLiveValidate = ({ formData }) => {
+    this.setState({ liveValidate: formData });
+  }
 
-  onFormDataChange = ({ formData }) => this.setState({ formData });
+  onFormDataChange = ({ formData }) => {
+    let schema = {...this.state.schema};
+    this.state.rules.map((rule, index) => {
+      if(formData[rule.property] === rule.value) {
+        if(rule.displayProperty) {
+          schema.properties[rule.displayProperty].displayControls = true;
+        } else if(rule.hideProperty) {
+          schema.properties[rule.hideProperty].displayControls = false;
+        }
+      }
+    });
+
+    this.setState({ formData, schema });
+  };
 
   render() {
     const {
@@ -350,12 +370,6 @@ class App extends Component {
       transformErrors,
       formLayout,
     } = this.state;
-
-    let layout = [
-      {i: 'firstName', x: 0, y: 0, w: 1, h: 2, static: true},
-      {i: 'lastName', x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4},
-      {i: 'age', x: 4, y: 0, w: 1, h: 2}
-    ];
 
     return (
       <div className="container-fluid">

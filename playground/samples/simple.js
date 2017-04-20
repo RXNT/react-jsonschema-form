@@ -8,47 +8,38 @@ module.exports = {
       firstName: {
         type: "string",
         title: "FN",
+        displayControls: true,
       },
       lastName: {
         type: "string",
         title: "LN",
+        displayControls: true,
       },
       showAge: {
         type: "boolean",
         title: "Show Age",
-        eventsHandlers: {
-          onChange : {
-            conditions: [
-              {
-                operator: "==",
-                value : true,
-                displayControls: ["age"]
-              },
-              {
-                operator: "==",
-                value : false,
-                hideControls: ["age"]
-              },
-            ]
-          }
-        }
+        displayControls: true,
       },
       age: {
         type: "integer",
         title: "Age",
+        displayControls: false,
       },
       bio: {
         type: "string",
         title: "Bio",
+        displayControls: true,
       },
       password: {
         type: "string",
         title: "Password",
         minLength: 3,
+        displayControls: true,
       },
       listOfStrings: {
         type: "array",
         title: "A list of strings",
+        displayControls: true,
         items: {
           type: "string",
           default: "bazinga",
@@ -116,5 +107,25 @@ module.exports = {
       {i: 'bio', x: 0, y: 3, w: 4, h: 2},
       {i: 'password', x: 0, y: 4, w: 3, h: 1},
       {i: 'listOfStrings', x: 0, y: 5, w: 4, h: 6}
+  ],
+  rules: [
+    {
+      property: "showAge",
+      value: true,
+      displayProperty: "age"
+    },
+    {
+      property: "showAge",
+      value: false,
+      hideProperty: "age"
+    },
+    {
+      property: "age",
+      condition: ">=",
+      value: "100",
+      confirmDlg: {
+        message: ""
+      }
+    }
   ]
 };
