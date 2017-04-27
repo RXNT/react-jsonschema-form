@@ -48,7 +48,7 @@ class ObjectField extends Component {
       onBlur,
       formLayout,
     } = this.props;
-
+    
     const { definitions, fields, formContext } = this.props.registry;
     const { SchemaField, TitleField, DescriptionField } = fields;
     const schema = retrieveSchema(this.props.schema, definitions);
@@ -58,7 +58,7 @@ class ObjectField extends Component {
       let properties = [];
       const tempProperties = Object.keys(schema.properties);
       tempProperties.map((name, index) => {
-        if(schema.properties[name].displayControls) {
+        if(uiSchema[name]["ui:options"].displayControls) {
           properties.push(name);
         }
       });

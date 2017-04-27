@@ -7,39 +7,32 @@ module.exports = {
     properties: {
       firstName: {
         type: "string",
-        title: "FN",
-        displayControls: true,
+        title: "FN"
       },
       lastName: {
         type: "string",
-        title: "LN",
-        displayControls: true,
+        title: "LN"
       },
       showAge: {
         type: "boolean",
-        title: "Show Age",
-        displayControls: true,
+        title: "Show Age"
       },
       age: {
         type: "integer",
-        title: "Age",
-        displayControls: false,
+        title: "Age"
       },
       bio: {
         type: "string",
-        title: "Bio",
-        displayControls: true,
+        title: "Bio"
       },
       password: {
         type: "string",
         title: "Password",
-        minLength: 3,
-        displayControls: true,
+        minLength: 3
       },
       listOfStrings: {
         type: "array",
         title: "A list of strings",
-        displayControls: true,
         items: {
           type: "string",
           default: "bazinga",
@@ -88,9 +81,6 @@ module.exports = {
         "controlClassNames": ["col-md-6"],
       },
     },
-    date: {
-      "ui:widget": "alt-datetime",
-    },
   },
   formData: {
     firstName: "Rajaram",
@@ -118,14 +108,6 @@ module.exports = {
       property: "showAge",
       value: false,
       hideProperty: "age"
-    },
-    {
-      property: "age",
-      condition: ">=",
-      value: "100",
-      confirmDlg: {
-        message: ""
-      }
     }
   ]
 };

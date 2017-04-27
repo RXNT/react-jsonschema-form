@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 import Codemirror from "react-codemirror";
+const _ = require('lodash');
 import "codemirror/mode/javascript/javascript";
 
 import { shouldRender } from "../src/utils";
@@ -283,6 +284,46 @@ class App extends Component {
     super(props);
     // initialize state with Simple data sample
     const { schema, uiSchema, formData, validate, formLayout, rules } = samples.Simple;
+    const tempProperties = Object.keys(schema.properties);
+
+    if(rules !== null && rules !== undefined && rules.length > 0) {
+      tempProperties.map((name, index) => {
+        if(uiSchema[name] === null || uiSchema[name] === undefined) {
+          uiSchema[name] = {
+            "ui:options": {}
+          };
+        }
+
+        //displayProperty
+        let results =_.filter(rules, function(rule){
+            return rule.displayProperty === name;
+        });
+
+        if(results.length === 1) {
+          if(formData[results[0].property] === results[0].value) {
+            uiSchema[name]["ui:options"].displayControls = true;
+          } else {
+            uiSchema[name]["ui:options"].displayControls = false;
+          }
+        } else {
+          uiSchema[name]["ui:options"].displayControls = true;
+        }
+      });
+    } else {
+
+      tempProperties.map((name, index) => {
+        if(uiSchema[name] === null || uiSchema[name] === undefined) {
+          uiSchema[name] = {
+            "ui:options": {
+              displayControls: true
+            }
+          };
+        } else {
+          uiSchema[name]["ui:options"].displayControls = true;
+        }
+      });
+    }
+
     this.state = {
       form: false,
       schema,
@@ -343,18 +384,18 @@ class App extends Component {
   }
 
   onFormDataChange = ({ formData }) => {
-    let schema = {...this.state.schema};
+    let uiSchema = {...this.state.uiSchema};
     this.state.rules.map((rule, index) => {
       if(formData[rule.property] === rule.value) {
         if(rule.displayProperty) {
-          schema.properties[rule.displayProperty].displayControls = true;
+          uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
         } else if(rule.hideProperty) {
-          schema.properties[rule.hideProperty].displayControls = false;
+          uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
         }
       }
     });
 
-    this.setState({ formData, schema });
+    this.setState({ formData, uiSchema });
   };
 
   render() {
