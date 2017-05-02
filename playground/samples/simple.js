@@ -88,6 +88,7 @@ module.exports = {
     age: 33,
     bio: "coments",
     password: "noneed",
+    showAge: true,
   },
   formLayout: [
       {i: 'firstName', x: 0, y: 0, w: 2, h: 1},

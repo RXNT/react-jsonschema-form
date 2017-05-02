@@ -48,7 +48,7 @@ class ObjectField extends Component {
       onBlur,
       formLayout,
     } = this.props;
-    
+
     const { definitions, fields, formContext } = this.props.registry;
     const { SchemaField, TitleField, DescriptionField } = fields;
     const schema = retrieveSchema(this.props.schema, definitions);
@@ -136,7 +136,6 @@ class ObjectField extends Component {
 
     return (
       <fieldset>
-
           <div>
             {parsedHtml}
           </div>
