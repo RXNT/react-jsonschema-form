@@ -31,7 +31,19 @@ class ObjectField extends Component {
   onPropertyChange = name => {
     return (value, options) => {
       const newFormData = { ...this.props.formData, [name]: value };
-      this.props.onChange(newFormData, options);
+
+      let uiSchema = {...this.props.uiSchema};
+      this.props.rules.map((rule, index) => {
+        if(newFormData[rule.property] === rule.value) {
+          if(rule.displayProperty) {
+            uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
+          } else if(rule.hideProperty) {
+            uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
+          }
+        }
+      });
+      
+      this.props.onChange(newFormData, options, uiSchema);
     };
   };
 
@@ -47,6 +59,7 @@ class ObjectField extends Component {
       readonly,
       onBlur,
       formLayout,
+      rules,
     } = this.props;
 
     const { definitions, fields, formContext } = this.props.registry;
@@ -98,6 +111,7 @@ class ObjectField extends Component {
         errorSchema={errorSchema[name]}
         idSchema={idSchema[name]}
         formData={formData[name]}
+        rules={rules}
         onChange={this.onPropertyChange(name)}
         onBlur={onBlur}
         registry={this.props.registry}

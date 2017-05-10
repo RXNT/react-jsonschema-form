@@ -87,10 +87,12 @@ export default class Form extends Component {
     return null;
   }
 
-  onChange = (formData, options = { validate: false }) => {
+  onChange = (formData, options = { validate: false }, uiSchema) => {
     const mustValidate = !this.props.noValidate &&
       (this.props.liveValidate || options.validate);
-    let state = { status: "editing", formData };
+
+    let state = { status: "editing", formData, uiSchema };
+
     if (mustValidate) {
       const { errors, errorSchema } = this.validate(formData);
       state = { ...state, errors, errorSchema };
@@ -160,6 +162,7 @@ export default class Form extends Component {
       enctype,
       acceptcharset,
       noHtml5Validate,
+      rules,
     } = this.props;
 
     const { schema, uiSchema, formData, errorSchema, idSchema, formLayout } = this.state;
@@ -183,6 +186,7 @@ export default class Form extends Component {
         <_SchemaField
           schema={schema}
           uiSchema={uiSchema}
+          rules={rules}
           errorSchema={errorSchema}
           idSchema={idSchema}
           formData={formData}
@@ -234,5 +238,6 @@ if (process.env.NODE_ENV !== "production") {
     transformErrors: PropTypes.func,
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
+    rules: PropTypes.array,
   };
 }

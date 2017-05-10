@@ -410,6 +410,7 @@ class App extends Component {
       ArrayFieldTemplate,
       transformErrors,
       formLayout,
+      rules,
     } = this.state;
 
     return (
@@ -487,6 +488,7 @@ class App extends Component {
                 console.log(`Touched ${id} with value ${value}`)}
               transformErrors={transformErrors}
               onError={log("errors")}
+              rules={rules}
             />}
         </div>
 
