@@ -383,20 +383,7 @@ class App extends Component {
     this.setState({ liveValidate: formData });
   }
 
-  onFormDataChange = ({ formData }) => {
-    let uiSchema = {...this.state.uiSchema};
-    this.state.rules.map((rule, index) => {
-      if(formData[rule.property] === rule.value) {
-        if(rule.displayProperty) {
-          uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
-        } else if(rule.hideProperty) {
-          uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
-        }
-      }
-    });
-
-    this.setState({ formData, uiSchema });
-  };
+  onFormDataChange = ({ formData }) => this.setState({ formData });
 
   render() {
     const {
