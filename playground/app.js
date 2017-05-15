@@ -292,6 +292,10 @@ class App extends Component {
           uiSchema[name] = {
             "ui:options": {}
           };
+        } else {
+          if(uiSchema[name]["ui:options"] === null || uiSchema[name]["ui:options"] === undefined) {
+            uiSchema[name]["ui:options"] = {};
+          }
         }
 
         //displayProperty
@@ -310,7 +314,6 @@ class App extends Component {
         }
       });
     } else {
-
       tempProperties.map((name, index) => {
         if(uiSchema[name] === null || uiSchema[name] === undefined) {
           uiSchema[name] = {
@@ -319,6 +322,9 @@ class App extends Component {
             }
           };
         } else {
+          if(uiSchema[name]["ui:options"] === null || uiSchema[name]["ui:options"] === undefined) {
+            uiSchema[name]["ui:options"] = {};
+          }
           uiSchema[name]["ui:options"].displayControls = true;
         }
       });
@@ -360,7 +366,59 @@ class App extends Component {
     const { ArrayFieldTemplate } = data;
     // force resetting form component instance
     this.setState({ form: false }, _ =>
-      this.setState({ ...data, form: true, ArrayFieldTemplate }));
+    this.setState({ ...data, form: true, ArrayFieldTemplate }));
+
+    const { schema, uiSchema, formData, rules } = data;
+    const tempProperties = Object.keys(schema.properties);
+
+    if(rules !== null && rules !== undefined && rules.length > 0) {
+      tempProperties.map((name, index) => {
+        if(uiSchema[name] === null || uiSchema[name] === undefined) {
+          uiSchema[name] = {
+            "ui:options": {}
+          };
+        } else {
+          if(uiSchema[name]["ui:options"] === null || uiSchema[name]["ui:options"] === undefined) {
+            uiSchema[name]["ui:options"] = {};
+          }
+        }
+
+        //displayProperty
+        let results =_.filter(rules, function(rule){
+            return rule.displayProperty === name;
+        });
+
+        if(results.length === 1) {
+          if(formData[results[0].property] === results[0].value) {
+            uiSchema[name]["ui:options"].displayControls = true;
+          } else {
+            uiSchema[name]["ui:options"].displayControls = false;
+          }
+        } else {
+          uiSchema[name]["ui:options"].displayControls = true;
+        }
+      });
+    } else {
+      tempProperties.map((name, index) => {
+        if(uiSchema[name] === null || uiSchema[name] === undefined) {
+          uiSchema[name] = {
+            "ui:options": {
+              displayControls: true
+            }
+          };
+        } else {
+          if(uiSchema[name]["ui:options"] === null || uiSchema[name]["ui:options"] === undefined) {
+            uiSchema[name]["ui:options"] = {};
+          }
+          uiSchema[name]["ui:options"].displayControls = true;
+        }
+      });
+    }
+
+    this.setState({
+      uiSchema,
+      rules,
+    });
   };
 
   onSchemaEdited = schema => this.setState({ schema });
