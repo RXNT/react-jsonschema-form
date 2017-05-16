@@ -441,7 +441,9 @@ class App extends Component {
     this.setState({ liveValidate: formData });
   }
 
-  onFormDataChange = ({ formData }) => this.setState({ formData });
+  onFormDataChange = ({ formData }) => {
+    this.setState({ formData });
+  };
 
   render() {
     const {

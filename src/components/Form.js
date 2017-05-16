@@ -97,6 +97,7 @@ export default class Form extends Component {
       const { errors, errorSchema } = this.validate(formData);
       state = { ...state, errors, errorSchema };
     }
+
     setState(this, state, () => {
       if (this.props.onChange) {
         this.props.onChange(this.state);
