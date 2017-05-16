@@ -8,6 +8,9 @@ const widgetMap = {
     select: "SelectWidget",
     hidden: "HiddenWidget",
   },
+  grid: {
+    grid: 'GridWidget'
+  },
   string: {
     text: "TextWidget",
     password: "PasswordWidget",

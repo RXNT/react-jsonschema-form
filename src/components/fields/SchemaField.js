@@ -17,6 +17,7 @@ const COMPONENT_TYPES = {
   number: "NumberField",
   object: "ObjectField",
   string: "StringField",
+  grid: "GridField",
 };
 
 function getFieldComponent(schema, uiSchema, fields) {

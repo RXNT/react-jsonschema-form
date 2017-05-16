@@ -30,13 +30,9 @@ module.exports = {
         title: "Password",
         minLength: 3
       },
-      listOfStrings: {
-        type: "array",
-        title: "A list of strings",
-        items: {
-          type: "string",
-          default: "bazinga",
-        },
+      patients: {
+        type: "grid",
+        title: "Patients"
       },
     },
   },
@@ -89,6 +85,33 @@ module.exports = {
     bio: "coments",
     password: "noneed",
     showAge: true,
+    patients: [
+     {
+       patientId: 40567,
+       patientName: 'Test, Grays1',
+       chartNumber: 'CHART123'
+     },
+     {
+       patientId: 40599,
+       patientName: 'Test, Grays2',
+       chartNumber: 'CHART999'
+     },
+     {
+       patientId: 40579,
+       patientName: 'Test, Grays3',
+       chartNumber: 'CHART888'
+     },
+     {
+       patientId: 40580,
+       patientName: 'Test, Grays4',
+       chartNumber: 'CHART555'
+     },
+     {
+       patientId: 40581,
+       patientName: 'Test, Grays5',
+       chartNumber: 'CHART222'
+     }
+   ],
   },
   formLayout: [
       {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
@@ -97,7 +120,7 @@ module.exports = {
       {i: 'age', x: 0, y: 2, w: 4, h: 1},
       {i: 'bio', x: 0, y: 3, w: 4, h: 2},
       {i: 'password', x: 0, y: 4, w: 3, h: 1},
-      {i: 'listOfStrings', x: 0, y: 5, w: 4, h: 6}
+      {i: 'patients', x: 0, y: 5, w: 4, h: 6}
   ],
   rules: [
     {
