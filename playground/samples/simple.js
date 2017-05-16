@@ -101,16 +101,6 @@ module.exports = {
        patientName: 'Test, Grays3',
        chartNumber: 'CHART888'
      },
-     {
-       patientId: 40580,
-       patientName: 'Test, Grays4',
-       chartNumber: 'CHART555'
-     },
-     {
-       patientId: 40581,
-       patientName: 'Test, Grays5',
-       chartNumber: 'CHART222'
-     }
    ],
   },
   formLayout: [

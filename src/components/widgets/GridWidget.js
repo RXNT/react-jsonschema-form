@@ -14,34 +14,12 @@ function GridWidget(props) {
     onChange,
   } = props;
 
-  let patients = [
-    {
-      patientId: 40567,
-      patientName: 'Test, Grays1',
-      chartNumber: 'CHART123'
-    },
-    {
-      patientId: 40599,
-      patientName: 'Test, Grays2',
-      chartNumber: 'CHART999'
-    },
-    {
-      patientId: 40579,
-      patientName: 'Test, Grays3',
-      chartNumber: 'CHART888'
-    },
-    {
-      patientId: 40580,
-      patientName: 'Test, Grays4',
-      chartNumber: 'CHART555'
-    }
-  ];
   let selectRowProp = {
                           mode: "checkbox"
                         };
   return (
     <div>
-      <BootstrapTable minHeight="150px" data={patients} selectRow={selectRowProp} search={false} keyField="patientId">
+      <BootstrapTable minHeight="150px" data={value} selectRow={selectRowProp} search={false} keyField="patientId">
         <TableHeaderColumn width ="30%" dataField="patientId" headerAlign="center" dataAlign="center" editable={false}>Patient Id</TableHeaderColumn>
         <TableHeaderColumn width ="35%" dataField="patientName" headerAlign="center" editable={false}>Patient Name</TableHeaderColumn>
         <TableHeaderColumn width ="35%"  dataField="chartNumber" headerAlign="center" editable={false} >Chart Number</TableHeaderColumn>
