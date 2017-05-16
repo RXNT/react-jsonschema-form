@@ -49,6 +49,7 @@ function GridField(props) {
       autofocus={autofocus}
       registry={registry}
       placeholder={placeholder}
+      uiSchema={uiSchema}
     />
   );
 }

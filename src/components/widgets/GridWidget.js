@@ -13,7 +13,9 @@ function GridWidget(props) {
     label,
     autofocus,
     onChange,
+    uiSchema,
   } = props;
+
 
   const onAfterSaveCell = (row, cellName, cellValue) => {
     let rowIndex =_.findIndex(value, function(gridRow){
@@ -32,12 +34,26 @@ function GridWidget(props) {
     afterSaveCell: onAfterSaveCell
   };
 
+  const gridColDefinitions = uiSchema["ui:options"]["gridDefinition"];
+
+  const keyColIndex =_.findIndex(gridColDefinitions, function(gridCol){
+      return gridCol.isKey === true;
+  });
+
+  const keyColumn = gridColDefinitions[keyColIndex].dataField;
+
+  let gridColumns = gridColDefinitions.map((gridColDefinition, index) => {
+    return <TableHeaderColumn width ={gridColDefinition.width}
+                              dataField={gridColDefinition.dataField}
+                              headerAlign={gridColDefinition.headerAlign}
+                              dataAlign={gridColDefinition.dataAlign}
+                              editable={gridColDefinition.editable}>{gridColDefinition.headerText}</TableHeaderColumn>
+  });
+
   return (
     <div>
-      <BootstrapTable minHeight="150px" data={value} selectRow={selectRowProp} search={false} cellEdit={ cellEditProp } keyField="patientId">
-        <TableHeaderColumn width ="30%" dataField="patientId" headerAlign="center" dataAlign="center" editable={false}>Patient Id</TableHeaderColumn>
-        <TableHeaderColumn width ="35%" dataField="patientName" headerAlign="center" editable={true}>Patient Name</TableHeaderColumn>
-        <TableHeaderColumn width ="35%"  dataField="chartNumber" headerAlign="center" editable={false} >Chart Number</TableHeaderColumn>
+      <BootstrapTable minHeight="150px" data={value} selectRow={selectRowProp} search={false} cellEdit={ cellEditProp } keyField={keyColumn}>
+        {gridColumns}
       </BootstrapTable>
     </div>
   );

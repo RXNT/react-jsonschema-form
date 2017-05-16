@@ -77,6 +77,35 @@ module.exports = {
         "controlClassNames": ["col-md-6"],
       },
     },
+    patients: {
+      "ui:options": {
+        "gridDefinition": [
+          {
+            "dataField": "patientId",
+            "headerText": "Patient Id",
+            "width": "30%",
+            "headerAlign": "center",
+            "dataAlign": "center",
+            "isKey": true,
+          },
+          {
+            "dataField": "patientName",
+            "headerText": "Patient Name",
+            "width": "35%",
+            "headerAlign": "center",
+            "dataAlign": "left",
+            "editable": true,
+          },
+          {
+            "dataField": "chartNumber",
+            "headerText": "Chart Number",
+            "width": "35%",
+            "headerAlign": "center",
+            "dataAlign": "left",
+          }
+        ]
+      },
+    },
   },
   formData: {
     firstName: "Rajaram",

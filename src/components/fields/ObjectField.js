@@ -42,7 +42,7 @@ class ObjectField extends Component {
           }
         }
       });
-      
+
       this.props.onChange(newFormData, options, uiSchema);
     };
   };
