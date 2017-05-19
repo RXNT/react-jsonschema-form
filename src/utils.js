@@ -11,6 +11,9 @@ const widgetMap = {
   grid: {
     grid: 'GridWidget'
   },
+  typeahead: {
+    typeahead: 'TypeAheadWidget'
+  },
   string: {
     text: "TextWidget",
     password: "PasswordWidget",

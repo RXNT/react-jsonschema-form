@@ -7,6 +7,7 @@ import SchemaField from "./SchemaField";
 import StringField from "./StringField";
 import TitleField from "./TitleField";
 import GridField from "./GridField";
+import TypeAheadField from "./TypeAheadField";
 import UnsupportedField from "./UnsupportedField";
 
 export default {
@@ -20,4 +21,5 @@ export default {
   TitleField,
   UnsupportedField,
   GridField,
+  TypeAheadField,
 };

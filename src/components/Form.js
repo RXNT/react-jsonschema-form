@@ -197,6 +197,8 @@ export default class Form extends Component {
           formLayout={formLayout}
           safeRenderCompletion={safeRenderCompletion}
         />
+        <br/>
+        <br/>
         {children
           ? children
           : <p>

@@ -34,6 +34,10 @@ module.exports = {
         type: "grid",
         title: "Patients"
       },
+      countries: {
+        type: "typeahead",
+        title: "Countries"
+      },
     },
   },
   uiSchema: {
@@ -106,6 +110,15 @@ module.exports = {
         ]
       },
     },
+    countries: {
+      "ui:options": {
+        "typeaheadDefinition": {
+          "labelKey": "name",
+          "placeholder": "Choose a country",
+          "keyColumn": "id"
+        }
+      },
+    },
   },
   formData: {
     firstName: "Rajaram",
@@ -131,6 +144,17 @@ module.exports = {
        chartNumber: 'CHART888'
      },
    ],
+   countries: [
+      {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
+      {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
+      {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
+      {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
+      {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
+      {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
+      {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+      {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
+      {id: 9, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+   ]
   },
   formLayout: [
       {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
@@ -139,7 +163,8 @@ module.exports = {
       {i: 'age', x: 0, y: 2, w: 4, h: 1},
       {i: 'bio', x: 0, y: 3, w: 4, h: 2},
       {i: 'password', x: 0, y: 4, w: 3, h: 1},
-      {i: 'patients', x: 0, y: 5, w: 4, h: 6}
+      {i: 'patients', x: 0, y: 5, w: 4, h: 6},
+      {i: 'countries', x: 0, y: 6, w: 4, h: 1},
   ],
   rules: [
     {

@@ -18,6 +18,7 @@ const COMPONENT_TYPES = {
   object: "ObjectField",
   string: "StringField",
   grid: "GridField",
+  typeahead: "TypeAheadField",
 };
 
 function getFieldComponent(schema, uiSchema, fields) {
