@@ -145,15 +145,6 @@ module.exports = {
      },
    ],
    countries: [
-      {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
-      {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
-      {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
-      {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
-      {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
-      {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
-      {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
-      {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
-      {id: 9, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
    ]
   },
   formLayout: [
@@ -177,5 +168,18 @@ module.exports = {
       value: false,
       hideProperty: "age"
     }
-  ]
+  ],
+  formDataSrc: {
+    countries: [
+      {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
+      {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
+      {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
+      {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
+      {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
+      {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
+      {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+      {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
+      {id: 9, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+    ]
+  }
 };

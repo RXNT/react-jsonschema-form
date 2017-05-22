@@ -60,8 +60,8 @@ if (process.env.NODE_ENV !== "production") {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     options: PropTypes.shape({
-      titleClassNames: PropTypes.string,
-      controlClassNames: PropTypes.string,
+      titleClassNames: PropTypes.array,
+      controlClassNames: PropTypes.array,
     }),
   };
 }

@@ -53,8 +53,8 @@ if (process.env.NODE_ENV !== "production") {
     placeholder: PropTypes.string,
     options: PropTypes.shape({
       rows: PropTypes.number,
-      titleClassNames: PropTypes.string,
-      controlClassNames: PropTypes.string,
+      titleClassNames: PropTypes.array,
+      controlClassNames: PropTypes.array,
     }),
     value: PropTypes.string,
     required: PropTypes.bool,

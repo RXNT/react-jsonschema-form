@@ -21,6 +21,7 @@ function TypeAheadField(props) {
     registry,
     onChange,
     onBlur,
+    formDataSrc,
   } = props;
 
   const { title, format } = schema;
@@ -50,6 +51,8 @@ function TypeAheadField(props) {
       registry={registry}
       placeholder={placeholder}
       uiSchema={uiSchema}
+      formDataSrc={formDataSrc}
+      name={name}
     />
   );
 }
@@ -61,10 +64,7 @@ if (process.env.NODE_ENV !== "production") {
     idSchema: PropTypes.object,
     onChange: PropTypes.func.isRequired,
     onBlur: PropTypes.func.isRequired,
-    formData: PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number,
-    ]),
+    formData: React.PropTypes.array,
     registry: PropTypes.shape({
       widgets: PropTypes.objectOf(
         PropTypes.oneOfType([PropTypes.func, PropTypes.object])

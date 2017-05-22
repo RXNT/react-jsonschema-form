@@ -14,25 +14,14 @@ function TypeAheadWidget(props) {
     autofocus,
     onChange,
     uiSchema,
+    formDataSrc,
+    name,
   } = props;
 
   const typeaheadDefinition = uiSchema["ui:options"]["typeaheadDefinition"];
 
   const handleChange = (selectedRows) => {
-    value.map((row, index) => {
-      row.isSelected = false;
-    });
-
-    if(selectedRows.length > 0) {
-      selectedRows.map((selectedRow, index) => {
-        let rowIndex =_.findIndex(value, function(row){
-            return row[typeaheadDefinition.keyColumn] === selectedRow[typeaheadDefinition.keyColumn];
-        });
-        value[rowIndex].isSelected = true;
-      });
-    }
-
-    return onChange(value === "" ? undefined : value);
+    return onChange(selectedRows);
   };
 
 
@@ -41,7 +30,7 @@ function TypeAheadWidget(props) {
     <div>
       <Typeahead
           labelKey={typeaheadDefinition.labelKey}
-          options={value}
+          options={formDataSrc[name]}
           placeholder={typeaheadDefinition.placeholder}
           onChange={handleChange}
         />
@@ -57,7 +46,7 @@ if (process.env.NODE_ENV !== "production") {
   TypeAheadWidget.propTypes = {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
-    value: PropTypes.bool,
+    value: PropTypes.array,
     required: PropTypes.bool,
     autofocus: PropTypes.bool,
     onChange: PropTypes.func,

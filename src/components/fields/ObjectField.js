@@ -60,6 +60,7 @@ class ObjectField extends Component {
       onBlur,
       formLayout,
       rules,
+      formDataSrc,
     } = this.props;
 
     const { definitions, fields, formContext } = this.props.registry;
@@ -112,6 +113,7 @@ class ObjectField extends Component {
         idSchema={idSchema[name]}
         formData={formData[name]}
         rules={rules}
+        formDataSrc={formDataSrc}
         onChange={this.onPropertyChange(name)}
         onBlur={onBlur}
         registry={this.props.registry}
@@ -177,6 +179,8 @@ if (process.env.NODE_ENV !== "production") {
       definitions: PropTypes.object.isRequired,
       formContext: PropTypes.object.isRequired,
     }),
+    rules: PropTypes.array,
+    formDataSrc: PropTypes.object,
   };
 }
 

@@ -283,7 +283,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout, rules } = samples.Simple;
+    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = samples.Simple;
     const tempProperties = Object.keys(schema.properties);
 
     if(rules !== null && rules !== undefined && rules.length > 0) {
@@ -341,6 +341,7 @@ class App extends Component {
       liveValidate: true,
       formLayout,
       rules,
+      formDataSrc,
     };
   }
 
@@ -458,6 +459,7 @@ class App extends Component {
       transformErrors,
       formLayout,
       rules,
+      formDataSrc,
     } = this.state;
 
     return (
@@ -536,6 +538,7 @@ class App extends Component {
               transformErrors={transformErrors}
               onError={log("errors")}
               rules={rules}
+              formDataSrc={formDataSrc}
             />}
         </div>
 

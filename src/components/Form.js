@@ -164,6 +164,7 @@ export default class Form extends Component {
       acceptcharset,
       noHtml5Validate,
       rules,
+      formDataSrc,
     } = this.props;
 
     const { schema, uiSchema, formData, errorSchema, idSchema, formLayout } = this.state;
@@ -188,6 +189,7 @@ export default class Form extends Component {
           schema={schema}
           uiSchema={uiSchema}
           rules={rules}
+          formDataSrc={formDataSrc}
           errorSchema={errorSchema}
           idSchema={idSchema}
           formData={formData}
@@ -242,5 +244,6 @@ if (process.env.NODE_ENV !== "production") {
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
     rules: PropTypes.array,
+    formDataSrc: PropTypes.object,
   };
 }

@@ -67,7 +67,7 @@ if (process.env.NODE_ENV !== "production") {
   GridWidget.propTypes = {
     schema: PropTypes.object.isRequired,
     id: PropTypes.string.isRequired,
-    value: PropTypes.bool,
+    value: PropTypes.array,
     required: PropTypes.bool,
     autofocus: PropTypes.bool,
     onChange: PropTypes.func,

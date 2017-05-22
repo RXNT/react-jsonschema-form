@@ -146,7 +146,7 @@ DefaultTemplate.defaultProps = {
 };
 
 function SchemaFieldRender(props) {
-  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules } = props;
+  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules, formDataSrc } = props;
   const {
     definitions,
     fields,
@@ -194,6 +194,7 @@ function SchemaFieldRender(props) {
       formContext={formContext}
       options={options}
       rules={rules}
+      formDataSrc={formDataSrc}
     />
   );
 
@@ -287,6 +288,7 @@ if (process.env.NODE_ENV !== "production") {
       formContext: PropTypes.object.isRequired,
     }),
     rules: PropTypes.array,
+    formDataSrc: PropTypes.object,
   };
 }
 
