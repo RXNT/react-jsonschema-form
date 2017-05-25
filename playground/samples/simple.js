@@ -13,30 +13,39 @@ module.exports = {
         type: "string",
         title: "LN"
       },
-      showAge: {
-        type: "boolean",
-        title: "Show Age"
-      },
-      age: {
-        type: "integer",
-        title: "Age"
-      },
-      bio: {
-        type: "string",
-        title: "Bio"
-      },
-      password: {
-        type: "string",
-        title: "Password",
-        minLength: 3
+      rxntmastercontrol: {
+        type: "object",
+        properties: {
+          city: {
+            type: "string",
+            title: "City"
+          },
+          state: {
+            type: "string",
+            title: "State"
+          },
+          country: {
+            type: "typeahead",
+            title: "Country"
+          },
+          zip: {
+            type: "object",
+            properties: {
+              zipcode: {
+                type: "string",
+                title: "zip"
+              },
+              zipextension: {
+                type: "string",
+                title: "extension"
+              },
+            }
+          }
+        }
       },
       patients: {
         type: "grid",
         title: "Patients"
-      },
-      countries: {
-        type: "typeahead",
-        title: "Countries"
       },
     },
   },
@@ -45,41 +54,53 @@ module.exports = {
       "ui:autofocus": true,
       "ui:options": {
         "titleClassNames": ["text-uppercase", "col-md-3"],
-        "controlClassNames": ["col-md-6"],
+        "controlClassNames": ["col-md-8"],
       },
     },
     lastName: {
       "ui:options": {
         "titleClassNames": ["text-uppercase", "col-md-3"],
-        "controlClassNames": ["col-md-6"],
+        "controlClassNames": ["col-md-8"],
       },
     },
-    showAge: {
-      "ui:options": {
-        "controlClassNames": ["text-uppercase"],
+    rxntmastercontrol: {
+      city: {
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-3"],
+          "controlClassNames": ["col-md-8"],
+        },
       },
-    },
-    age: {
-      "ui:widget": "updown",
-      "ui:options": {
-        "titleClassNames": ["text-uppercase", "col-md-3"],
-        "controlClassNames": ["col-md-6"],
+      state: {
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-3"],
+          "controlClassNames": ["col-md-8"],
+        },
       },
-    },
-    bio: {
-      "ui:widget": "textarea",
-      "ui:options": {
-        "titleClassNames": ["text-uppercase", "col-md-3"],
-        "controlClassNames": ["col-md-6"],
-        rows: 3,
+      country: {
+        "ui:options": {
+          "typeaheadDefinition": {
+            "labelKey": "name",
+            "placeholder": "Choose a country",
+            "keyColumn": "id"
+          },
+          "titleClassNames": ["text-uppercase", "col-md-3"],
+          "controlClassNames": ["col-md-8"],
+        },
       },
-    },
-    password: {
-      "ui:widget": "password",
-      "ui:options": {
-        "titleClassNames": ["text-uppercase", "col-md-4"],
-        "controlClassNames": ["col-md-6"],
-      },
+      zip: {
+        zipcode: {
+          "ui:options": {
+            "titleClassNames": ["text-uppercase", "col-md-3"],
+            "controlClassNames": ["col-md-8"],
+          },
+        },
+        zipextension: {
+          "ui:options": {
+            "titleClassNames": ["text-uppercase", "col-md-3"],
+            "controlClassNames": ["col-md-8"],
+          },
+        },
+      }
     },
     patients: {
       "ui:options": {
@@ -110,23 +131,10 @@ module.exports = {
         ]
       },
     },
-    countries: {
-      "ui:options": {
-        "typeaheadDefinition": {
-          "labelKey": "name",
-          "placeholder": "Choose a country",
-          "keyColumn": "id"
-        }
-      },
-    },
   },
   formData: {
     firstName: "Rajaram",
     lastName: "G",
-    age: 33,
-    bio: "coments",
-    password: "noneed",
-    showAge: true,
     patients: [
      {
        patientId: 40567,
@@ -144,19 +152,46 @@ module.exports = {
        chartNumber: 'CHART888'
      },
    ],
-   countries: [
-   ]
   },
-  formLayout: [
-      {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
-      {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
-      {i: 'showAge', x: 0, y: 1, w: 4, h: 1},
-      {i: 'age', x: 0, y: 2, w: 4, h: 1},
-      {i: 'bio', x: 0, y: 3, w: 4, h: 2},
-      {i: 'password', x: 0, y: 4, w: 3, h: 1},
-      {i: 'patients', x: 0, y: 5, w: 4, h: 6},
-      {i: 'countries', x: 0, y: 6, w: 4, h: 1},
-  ],
+  formLayout: {
+    form: {
+      layout: [
+        {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
+        {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
+        {i: 'rxntmastercontrol', x: 0, y: 1, w: 4, h: 6},
+        {i: 'patients', x: 0, y: 2, w: 4, h: 6},
+      ]
+    },
+    rxntmastercontrol: {
+      layout: [
+        {i: 'city', x: 0, y: 0, w: 2, h: 1},
+        {i: 'state', x: 0, y: 1, w: 2, h: 1},
+        {i: 'country', x: 0, y: 2, w: 2, h: 1},
+        {i: 'zip', x: 0, y: 3, w: 4, h: 1},
+      ]
+    },
+    zip: {
+      layout: [
+        {i: 'zipcode', x: 0, y: 0, w: 2, h: 1},
+        {i: 'zipextension', x: 0, y: 1, w: 2, h: 1},
+      ]
+    }
+  },
+  formDataSrc: {
+    rxntmastercontrol: {
+      country: [
+        {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
+        {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
+        {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
+        {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
+        {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
+        {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
+        {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+        {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
+        {id: 9, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+      ]
+    }
+  },
   rules: [
     {
       property: "showAge",
@@ -168,18 +203,5 @@ module.exports = {
       value: false,
       hideProperty: "age"
     }
-  ],
-  formDataSrc: {
-    countries: [
-      {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
-      {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
-      {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
-      {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
-      {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
-      {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
-      {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
-      {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
-      {id: 9, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
-    ]
-  }
+  ]
 };

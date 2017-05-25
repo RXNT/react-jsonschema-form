@@ -16,6 +16,8 @@ function TypeAheadWidget(props) {
     uiSchema,
     formDataSrc,
     name,
+    parentName,
+    options,
   } = props;
 
   const typeaheadDefinition = uiSchema["ui:options"]["typeaheadDefinition"];
@@ -24,13 +26,23 @@ function TypeAheadWidget(props) {
     return onChange(selectedRows);
   };
 
+  let parentCtrlName = parentName;
+  if(parentCtrlName === undefined) {
+    parentCtrlName = "form";
+  }
 
+  let classNames = "form-control"
+  if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
+    classNames = options.controlClassNames
+                        .join(" ")
+                        .trim();
+  }
 
   return (
-    <div>
+    <div className={classNames}>
       <Typeahead
           labelKey={typeaheadDefinition.labelKey}
-          options={formDataSrc[name]}
+          options={formDataSrc[parentCtrlName][name]}
           placeholder={typeaheadDefinition.placeholder}
           onChange={handleChange}
         />

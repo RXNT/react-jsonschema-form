@@ -72,9 +72,9 @@ class ObjectField extends Component {
       let properties = [];
       const tempProperties = Object.keys(schema.properties);
       tempProperties.map((name, index) => {
-        if(uiSchema[name]["ui:options"].displayControls) {
+        //if(uiSchema[name]["ui:options"].displayControls) {
           properties.push(name);
-        }
+        //}
       });
       //const properties = Object.keys(schema.properties);
       orderedProperties = orderProperties(properties, uiSchema["ui:order"]);
@@ -93,11 +93,11 @@ class ObjectField extends Component {
 
     let parsedHtml = null;
 
-    schemaFieldComponents = orderedProperties.map((name, index) => {
+    schemaFieldComponents = orderedProperties.map((propertyName, index) => {
       let options = {};
 
       if(uiSchema !== null && uiSchema !== undefined) {
-        let ctrlUiSchema = uiSchema[name];
+        let ctrlUiSchema = uiSchema[propertyName];
         if(ctrlUiSchema !== null && ctrlUiSchema !== undefined) {
           options = ctrlUiSchema["ui:options"];
         }
@@ -105,50 +105,54 @@ class ObjectField extends Component {
 
       return <SchemaField
         key={index}
-        name={name}
-        required={this.isRequired(name)}
-        schema={schema.properties[name]}
-        uiSchema={uiSchema[name]}
-        errorSchema={errorSchema[name]}
-        idSchema={idSchema[name]}
-        formData={formData[name]}
+        name={propertyName}
+        required={this.isRequired(propertyName)}
+        schema={schema.properties[propertyName]}
+        uiSchema={uiSchema[propertyName]}
+        errorSchema={errorSchema[propertyName]}
+        idSchema={idSchema[propertyName]}
+        formData={formData[propertyName]}
         rules={rules}
         formDataSrc={formDataSrc}
-        onChange={this.onPropertyChange(name)}
+        onChange={this.onPropertyChange(propertyName)}
         onBlur={onBlur}
         registry={this.props.registry}
         disabled={disabled}
         readonly={readonly}
         options={options}
+        parentName={name}
       />;
     });
 
     if(formLayout !== null && formLayout !== undefined) {
       let propKeys = {};
       let visibleLayouts = [];
-
+      let currentObjectFormLayout = [];
+      if(name === undefined) {
+        currentObjectFormLayout = formLayout.form.layout;
+      } else {
+        currentObjectFormLayout = formLayout[name].layout;
+      }
       orderedProperties.map((name, index) => {
          propKeys[name] = index;
-         let results =_.filter(formLayout, function(frmLayout){
+         let results =_.filter(currentObjectFormLayout, function(frmLayout){
             return frmLayout.i === name;
-        });
-        visibleLayouts.push(results[0]);
+         });
+         visibleLayouts.push(results[0]);
       });
-
-
-
-
 
       let renderedElements = visibleLayouts.map((frmLayout, index) => {
         return (<div key={frmLayout.i}>{schemaFieldComponents[propKeys[frmLayout.i]]}</div>);
       });
 
-      parsedHtml = <ReactGridLayout className='layout' layout={formLayout} cols={12} rowHeight={30} width={1200}>
+      parsedHtml = <ReactGridLayout className='layout' layout={currentObjectFormLayout} cols={12} rowHeight={30} width={1200}>
                           {renderedElements}
                       </ReactGridLayout>;
     } else {
       parsedHtml = schemaFieldComponents;
     }
+
+    //parsedHtml = schemaFieldComponents;
 
     return (
       <fieldset>

@@ -22,6 +22,7 @@ function TypeAheadField(props) {
     onChange,
     onBlur,
     formDataSrc,
+    parentName,
   } = props;
 
   const { title, format } = schema;
@@ -53,6 +54,7 @@ function TypeAheadField(props) {
       uiSchema={uiSchema}
       formDataSrc={formDataSrc}
       name={name}
+      parentName={parentName}
     />
   );
 }

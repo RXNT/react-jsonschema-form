@@ -146,7 +146,7 @@ DefaultTemplate.defaultProps = {
 };
 
 function SchemaFieldRender(props) {
-  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules, formDataSrc } = props;
+  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules, formDataSrc, parentName } = props;
   const {
     definitions,
     fields,
@@ -195,6 +195,7 @@ function SchemaFieldRender(props) {
       options={options}
       rules={rules}
       formDataSrc={formDataSrc}
+      parentName={parentName}
     />
   );
 
