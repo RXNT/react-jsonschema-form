@@ -282,8 +282,13 @@ function ThemeSelector({ theme, select }) {
 class App extends Component {
   constructor(props) {
     super(props);
+
+    let form1 =_.filter(samples.Simple, function(sample){
+        return sample.form === 1;
+    });
+
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = samples.Simple;
+    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = form1[0];
     const tempProperties = Object.keys(schema.properties);
 
     if(rules !== null && rules !== undefined && rules.length > 0) {
@@ -342,34 +347,42 @@ class App extends Component {
       formLayout,
       rules,
       formDataSrc,
+      formNo: 1,
+      noOfForms: samples.Simple.length
     };
   }
 
   componentDidMount() {
-    this.load(samples.Simple);
+    this.load(samples.Simple, 0);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shouldRender(this, nextProps, nextState);
   }
 
-  load = data => {
+  load = (data, formNoIncrementBy) => {
 
-    if(data.formLayout !== null || data.formLayout !== undefined) {
+    let formNo = this.state.formNo + formNoIncrementBy;
+
+    let formInfo =_.filter(data, function(sample){
+        return sample.form === formNo;
+    });
+
+    if(formInfo[0].formLayout !== null || formInfo[0].formLayout !== undefined) {
       this.setState({ formLayout: null});
     }
 
-    if(data.rules !== null || data.rules !== undefined) {
+    if(formInfo[0].rules !== null || formInfo[0].rules !== undefined) {
       this.setState({ rules: null});
     }
 
     // Reset the ArrayFieldTemplate whenever you load new data
-    const { ArrayFieldTemplate } = data;
+    const { ArrayFieldTemplate } = formInfo[0];
     // force resetting form component instance
     this.setState({ form: false }, _ =>
-    this.setState({ ...data, form: true, ArrayFieldTemplate }));
+    this.setState({ ...formInfo[0], form: true, ArrayFieldTemplate }));
 
-    const { schema, uiSchema, formData, rules } = data;
+    const { schema, uiSchema, formData, rules } = formInfo[0];
     const tempProperties = Object.keys(schema.properties);
 
     if(rules !== null && rules !== undefined && rules.length > 0) {
@@ -419,6 +432,7 @@ class App extends Component {
     this.setState({
       uiSchema,
       rules,
+      formNo: formNo
     });
   };
 
@@ -446,6 +460,20 @@ class App extends Component {
     this.setState({ formData });
   };
 
+  showNextPage = ({ formData }) => {
+    if(this.state.formNo < this.state.noOfForms) {
+      let formNoIncrementBy = 1;
+      this.load(samples.Simple, formNoIncrementBy);
+    }
+  }
+
+  showPreviousPage = () => {
+    if(this.state.formNo > 1) {
+      let formNoIncrementBy = -1;
+      this.load(samples.Simple, formNoIncrementBy);
+    }
+  }
+
   render() {
     const {
       schema,
@@ -460,6 +488,8 @@ class App extends Component {
       formLayout,
       rules,
       formDataSrc,
+      formNo,
+      noOfForms,
     } = this.state;
 
     return (
@@ -529,8 +559,8 @@ class App extends Component {
               formData={formData}
               formLayout={formLayout}
               onChange={this.onFormDataChange}
-              onSubmit={({ formData }) =>
-                console.log("submitted formData", formData)}
+              onSubmit= {this.showNextPage}
+              onPrevious = {this.showPreviousPage}
               fields={{ geo: GeoPosition }}
               validate={validate}
               onBlur={(id, value) =>
@@ -539,6 +569,8 @@ class App extends Component {
               onError={log("errors")}
               rules={rules}
               formDataSrc={formDataSrc}
+              formNo={formNo}
+              noOfForms={noOfForms}
             />}
         </div>
 

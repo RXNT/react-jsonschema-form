@@ -135,6 +135,11 @@ export default class Form extends Component {
     this.setState({ status: "initial", errors: [], errorSchema: {} });
   };
 
+  onPrevious = () => {
+    event.preventDefault();
+    this.props.onPrevious();
+  }
+
   getRegistry() {
     // For BC, accept passed SchemaField and TitleField props and pass them to
     // the "fields" registry one.
@@ -165,11 +170,24 @@ export default class Form extends Component {
       noHtml5Validate,
       rules,
       formDataSrc,
+      formNo,
+      noOfForms,
     } = this.props;
 
     const { schema, uiSchema, formData, errorSchema, idSchema, formLayout } = this.state;
     const registry = this.getRegistry();
     const _SchemaField = registry.fields.SchemaField;
+
+    let submitButtonText = "Next";
+    let displayPrevButton = false;
+
+    if(formNo === noOfForms) {
+      submitButtonText = "Submit";
+    }
+
+    if(formNo > 1) {
+      displayPrevButton = true;
+    }
 
     return (
       <form
@@ -204,7 +222,8 @@ export default class Form extends Component {
         {children
           ? children
           : <p>
-              <button type="submit" className="btn btn-info">Submit</button>
+              {displayPrevButton && <button type="button" className="btn btn-info" onClick={this.onPrevious}>Previous</button>}
+              <button type="submit" className="btn btn-info pull-right">{submitButtonText}</button>
             </p>}
       </form>
     );
@@ -245,5 +264,8 @@ if (process.env.NODE_ENV !== "production") {
     formContext: PropTypes.object,
     rules: PropTypes.array,
     formDataSrc: PropTypes.object,
+    formNo: PropTypes.number,
+    noOfForms: PropTypes.number,
+    onPrevious: PropTypes.func,
   };
 }
