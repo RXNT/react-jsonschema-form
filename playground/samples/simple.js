@@ -15,9 +15,21 @@ module.exports = [
           type: "string",
           title: "LN"
         },
+        showAge: {
+          type: "boolean",
+          title: "Show Age",
+        },
+        age: {
+          type: "integer",
+          title: "Age"
+        },
         rxntmastercontrol: {
           type: "object",
           properties: {
+            showCity: {
+              type: "boolean",
+              title: "Show City",
+            },
             city: {
               type: "string",
               title: "City"
@@ -65,7 +77,25 @@ module.exports = [
           "controlClassNames": ["col-md-8"],
         },
       },
+      showAge: {
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-3"],
+          "controlClassNames": ["col-md-8"],
+        },
+      },
+      age: {
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-3"],
+          "controlClassNames": ["col-md-8"],
+        },
+      },
       rxntmastercontrol: {
+        showCity: {
+          "ui:options": {
+            "titleClassNames": ["text-uppercase", "col-md-3"],
+            "controlClassNames": ["col-md-8"],
+          },
+        },
         city: {
           "ui:options": {
             "titleClassNames": ["text-uppercase", "col-md-3"],
@@ -102,7 +132,7 @@ module.exports = [
               "controlClassNames": ["col-md-8"],
             },
           },
-        }
+        },
       },
       patients: {
         "ui:options": {
@@ -137,6 +167,7 @@ module.exports = [
     formData: {
       firstName: "Rajaram",
       lastName: "G",
+      showAge: true,
       patients: [
        {
          patientId: 40567,
@@ -160,16 +191,19 @@ module.exports = [
         layout: [
           {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
           {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
-          {i: 'rxntmastercontrol', x: 0, y: 1, w: 4, h: 6},
-          {i: 'patients', x: 0, y: 2, w: 4, h: 6},
+          {i: 'showAge', x: 0, y: 1, w: 4, h: 1},
+          {i: 'age', x: 0, y: 2, w: 4, h: 1},
+          {i: 'rxntmastercontrol', x: 0, y: 3, w: 4, h: 7},
+          {i: 'patients', x: 0, y: 4, w: 4, h: 6},
         ]
       },
       rxntmastercontrol: {
         layout: [
-          {i: 'city', x: 0, y: 0, w: 2, h: 1},
-          {i: 'state', x: 0, y: 1, w: 2, h: 1},
-          {i: 'country', x: 0, y: 2, w: 2, h: 1},
-          {i: 'zip', x: 0, y: 3, w: 4, h: 1},
+          {i: 'showCity', x: 0, y: 0, w: 2, h: 1},
+          {i: 'city', x: 0, y: 1, w: 2, h: 1},
+          {i: 'state', x: 0, y: 2, w: 2, h: 1},
+          {i: 'country', x: 0, y: 3, w: 2, h: 1},
+          {i: 'zip', x: 0, y: 4, w: 4, h: 1},
         ]
       },
       zip: {
@@ -193,72 +227,101 @@ module.exports = [
         ]
       }
     },
+    rules: {
+      form : {
+        rules: [
+          {
+            property: "showAge",
+            value: true,
+            displayProperty: "age"
+          },
+          {
+            property: "showAge",
+            value: false,
+            hideProperty: "age"
+          }
+        ],
+        rxntmastercontrol: {
+          rules: [
+            {
+              property: "showCity",
+              value: true,
+              displayProperty: "city"
+            },
+            {
+              property: "showCity",
+              value: false,
+              hideProperty: "city"
+            }
+          ]
+        }
+      }
+    }
+ },
+ {
+    form: 2,
+    schema: {
+      title: "form 2",
+      description: "form 2",
+      type: "object",
+      properties: {
+        middleName : {
+          type: "string",
+          title: "form 2 Middle Name"
+        },
+      }
+    },
+    uiSchema: {
+      middleName: {
+        "ui:autofocus": true,
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-6"],
+          "controlClassNames": ["col-md-5"],
+        },
+      }
+    },
+    formData: {
+    },
+    formLayout: {
+      form: {
+        layout: [
+          {i: 'middleName', x: 0, y: 0, w: 4, h: 1},
+        ]
+      },
+    },
     rules: []
-  },
-  {
-      form: 2,
-      schema: {
-        title: "form 2",
-        description: "form 2",
-        type: "object",
-        properties: {
-          middleName : {
-            type: "string",
-            title: "form 2 Middle Name"
-          },
-        }
-      },
-      uiSchema: {
-        middleName: {
-          "ui:autofocus": true,
-          "ui:options": {
-            "titleClassNames": ["text-uppercase", "col-md-6"],
-            "controlClassNames": ["col-md-5"],
-          },
-        }
-      },
-      formData: {
-      },
-      formLayout: {
-        form: {
-          layout: [
-            {i: 'middleName', x: 0, y: 0, w: 4, h: 1},
-          ]
-        },
-      },
-      rules: []
-  },
-  {
-      form: 3,
-      schema: {
-        title: "form 3",
-        description: "form 3",
-        type: "object",
-        properties: {
-          lastName: {
-            type: "string",
-            title: "form 3 Last Name"
-          },
-        }
-      },
-      uiSchema: {
+ },
+ {
+    form: 3,
+    schema: {
+      title: "form 3",
+      description: "form 3",
+      type: "object",
+      properties: {
         lastName: {
-          "ui:autofocus": true,
-          "ui:options": {
-            "titleClassNames": ["text-uppercase", "col-md-6"],
-            "controlClassNames": ["col-md-5"],
-          },
-        }
-      },
-      formData: {
-      },
-      formLayout: {
-        form: {
-          layout: [
-            {i: 'lastName', x: 0, y: 0, w: 4, h: 1},
-          ]
+          type: "string",
+          title: "form 3 Last Name"
         },
+      }
+    },
+    uiSchema: {
+      lastName: {
+        "ui:autofocus": true,
+        "ui:options": {
+          "titleClassNames": ["text-uppercase", "col-md-6"],
+          "controlClassNames": ["col-md-5"],
+        },
+      }
+    },
+    formData: {
+    },
+    formLayout: {
+      form: {
+        layout: [
+          {i: 'lastName', x: 0, y: 0, w: 4, h: 1},
+        ]
       },
-      rules: []
-  }
+    },
+    rules: []
+ }
 ]

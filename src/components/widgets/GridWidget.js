@@ -43,7 +43,7 @@ function GridWidget(props) {
   const keyColumn = gridColDefinitions[keyColIndex].dataField;
 
   let gridColumns = gridColDefinitions.map((gridColDefinition, index) => {
-    return <TableHeaderColumn width ={gridColDefinition.width}
+    return <TableHeaderColumn key={index} width ={gridColDefinition.width}
                               dataField={gridColDefinition.dataField}
                               headerAlign={gridColDefinition.headerAlign}
                               dataAlign={gridColDefinition.dataAlign}

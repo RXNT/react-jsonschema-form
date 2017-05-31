@@ -9,6 +9,7 @@ import {
 } from "../../utils";
 
 let schemaFieldComponents = null;
+let uiSchemaGlobal = null;
 
 class ObjectField extends Component {
   static defaultProps = {
@@ -33,19 +34,108 @@ class ObjectField extends Component {
       const newFormData = { ...this.props.formData, [name]: value };
 
       let uiSchema = {...this.props.uiSchema};
-      this.props.rules.map((rule, index) => {
-        if(newFormData[rule.property] === rule.value) {
-          if(rule.displayProperty) {
-            uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
-          } else if(rule.hideProperty) {
-            uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
-          }
-        }
-      });
-
-      this.props.onChange(newFormData, options, uiSchema);
+      let schema = {...this.props.schema};
+      uiSchemaGlobal = uiSchema;
+      // this.props.rules.map((rule, index) => {
+      //   if(newFormData[rule.property] === rule.value) {
+      //     if(rule.displayProperty) {
+      //       uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
+      //     } else if(rule.hideProperty) {
+      //       uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
+      //     }
+      //   }
+      // });
+      this.evaluateRules(schema.properties, '', this.props.rules, newFormData);
+      this.props.onChange(newFormData, options, uiSchemaGlobal);
     };
   };
+
+  evaluateRules(obj, stack, rules, formData) {
+    let compScope = this;
+
+    for (var property in obj) {
+        if(obj[property]["type"] === 'object') {
+          let stackPaths = (stack + '.' + property).split(".");
+
+          let tempUiSchema = uiSchemaGlobal;
+          for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
+            if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
+              tempUiSchema = tempUiSchema[stackPaths[pathCount]];
+            }
+          }
+
+          if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
+            tempUiSchema["ui:options"] = {};
+          }
+
+          tempUiSchema["ui:options"].displayControls = true;
+
+          compScope.evaluateRules(obj[property].properties, stack + '.' + property, rules, formData);
+        } else {
+          let stackPaths = (stack + '.' + property).split(".");
+          stackPaths[0] = "form";
+
+          let rulesObj = rules;
+
+          for (let pathCount = 0; pathCount < stackPaths.length - 1; pathCount++) {
+            if(rulesObj[stackPaths[pathCount]] !== null && rulesObj[stackPaths[pathCount]] !== undefined) {
+              rulesObj = rulesObj[stackPaths[pathCount]];
+            } else {
+              rulesObj = [];
+              break;
+            }
+          }
+
+          let results =_.filter(rulesObj.rules, function(rule){
+              return rule.displayProperty === stackPaths[stackPaths.length-1];
+          });
+
+          if(results.length === 1) {
+            let propValue = formData;
+            for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
+              if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
+                propValue = propValue[stackPaths[pathCount]];
+              } else {
+                propValue = null;
+                break;
+              }
+            }
+
+            if(propValue !== null) {
+              if(propValue[results[0].property] !== undefined && propValue[results[0].property] !== null){
+                propValue = propValue[results[0].property];
+              } else {
+                propValue = null;
+              }
+            }
+
+            let tempUiSchema = uiSchemaGlobal;
+
+            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
+              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
+                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
+              }
+            }
+
+            if(propValue === results[0].value) {
+              tempUiSchema["ui:options"].displayControls = true;
+            } else {
+              tempUiSchema["ui:options"].displayControls = false;
+            }
+
+          } else {
+            let tempUiSchema = uiSchemaGlobal;
+            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
+              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
+                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
+              }
+            }
+
+            tempUiSchema["ui:options"].displayControls = true;
+          }
+        }
+    }
+  }
 
   render() {
     const {
@@ -72,9 +162,9 @@ class ObjectField extends Component {
       let properties = [];
       const tempProperties = Object.keys(schema.properties);
       tempProperties.map((name, index) => {
-        //if(uiSchema[name]["ui:options"].displayControls) {
+        if(uiSchema[name]["ui:options"].displayControls) {
           properties.push(name);
-        //}
+        }
       });
       //const properties = Object.keys(schema.properties);
       orderedProperties = orderProperties(properties, uiSchema["ui:order"]);
@@ -183,7 +273,7 @@ if (process.env.NODE_ENV !== "production") {
       definitions: PropTypes.object.isRequired,
       formContext: PropTypes.object.isRequired,
     }),
-    rules: PropTypes.array,
+    rules: PropTypes.object,
     formDataSrc: PropTypes.object,
   };
 }

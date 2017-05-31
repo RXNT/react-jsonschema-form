@@ -262,7 +262,7 @@ if (process.env.NODE_ENV !== "production") {
     transformErrors: PropTypes.func,
     safeRenderCompletion: PropTypes.bool,
     formContext: PropTypes.object,
-    rules: PropTypes.array,
+    rules: PropTypes.object,
     formDataSrc: PropTypes.object,
     formNo: PropTypes.number,
     noOfForms: PropTypes.number,
