@@ -4,7 +4,7 @@ import Codemirror from "react-codemirror";
 const _ = require('lodash');
 import "codemirror/mode/javascript/javascript";
 
-import { shouldRender } from "../src/utils";
+import { shouldRender, evaluateRulesWrapperFunction } from "../src/utils";
 import { samples } from "./samples";
 import Form from "../src";
 
@@ -279,7 +279,7 @@ function ThemeSelector({ theme, select }) {
   );
 }
 
-let uiSchemaGlobal = null;
+//let uiSchemaClosure = null;
 
 class App extends Component {
   constructor(props) {
@@ -292,13 +292,13 @@ class App extends Component {
     // initialize state with Simple data sample
     const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = form1[0];
     //this.evaluateTemp(schema.properties);
-    uiSchemaGlobal = uiSchema;
-    this.evaluateRules(schema.properties, '', rules, formData);
+    //uiSchemaClosure = uiSchema;
+    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, rules, formData);
 
     this.state = {
       form: false,
       schema,
-      uiSchema: uiSchemaGlobal,
+      uiSchema: uiSchemaWithRules,
       formData,
       validate,
       editor: "default",
@@ -310,93 +310,6 @@ class App extends Component {
       formNo: 1,
       noOfForms: samples.Simple.length
     };
-  }
-
-  evaluateRules(obj, stack, rules, formData) {
-    let compScope = this;
-
-    for (var property in obj) {
-        if(obj[property]["type"] === 'object') {
-          let stackPaths = (stack + '.' + property).split(".");
-
-          let tempUiSchema = uiSchemaGlobal;
-          for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-            if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-              tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-            }
-          }
-
-          if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
-            tempUiSchema["ui:options"] = {};
-          }
-
-          tempUiSchema["ui:options"].displayControls = true;
-
-          compScope.evaluateRules(obj[property].properties, stack + '.' + property, rules, formData);
-        } else {
-          let stackPaths = (stack + '.' + property).split(".");
-          stackPaths[0] = "form";
-
-          let rulesObj = rules;
-
-          for (let pathCount = 0; pathCount < stackPaths.length - 1; pathCount++) {
-            if(rulesObj[stackPaths[pathCount]] !== null && rulesObj[stackPaths[pathCount]] !== undefined) {
-              rulesObj = rulesObj[stackPaths[pathCount]];
-            } else {
-              rulesObj = [];
-              break;
-            }
-          }
-
-          let results =_.filter(rulesObj.rules, function(rule){
-              return rule.displayProperty === stackPaths[stackPaths.length-1];
-          });
-
-          if(results.length === 1) {
-            let propValue = formData;
-            for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
-              if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
-                propValue = propValue[stackPaths[pathCount]];
-              } else {
-                propValue = null;
-                break;
-              }
-            }
-
-            if(propValue !== null) {
-              if(propValue[results[0].property] !== undefined && propValue[results[0].property] !== null){
-                propValue = propValue[results[0].property];
-              } else {
-                propValue = null;
-              }
-            }
-
-            let tempUiSchema = uiSchemaGlobal;
-
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            if(propValue === results[0].value) {
-              tempUiSchema["ui:options"].displayControls = true;
-            } else {
-              tempUiSchema["ui:options"].displayControls = false;
-            }
-
-          } else {
-            let tempUiSchema = uiSchemaGlobal;
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            tempUiSchema["ui:options"].displayControls = true;
-          }
-        }
-    }
   }
 
   componentDidMount() {
@@ -431,11 +344,12 @@ class App extends Component {
 
     const { schema, uiSchema, rules, formData } = formInfo[0];
 
-    uiSchemaGlobal = uiSchema;
-    this.evaluateRules(schema.properties, '', rules, formData);
+    //uiSchemaClosure = uiSchema;
+    //this.evaluateRules(schema.properties, '', rules, formData);
+    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, rules, formData);
 
     this.setState({
-      uiSchema: uiSchemaGlobal,
+      uiSchema: uiSchemaWithRules,
       rules,
       formNo: formNo
     });

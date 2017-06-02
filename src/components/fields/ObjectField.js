@@ -1,6 +1,9 @@
 import React, { Component, PropTypes } from "react";
 const ReactGridLayout = require('react-grid-layout');
 const _ = require('lodash');
+import {
+  evaluateRulesWrapperFunction
+} from "../../utils";
 
 import {
   orderProperties,
@@ -9,7 +12,6 @@ import {
 } from "../../utils";
 
 let schemaFieldComponents = null;
-let uiSchemaGlobal = null;
 
 class ObjectField extends Component {
   static defaultProps = {
@@ -35,107 +37,11 @@ class ObjectField extends Component {
 
       let uiSchema = {...this.props.uiSchema};
       let schema = {...this.props.schema};
-      uiSchemaGlobal = uiSchema;
-      // this.props.rules.map((rule, index) => {
-      //   if(newFormData[rule.property] === rule.value) {
-      //     if(rule.displayProperty) {
-      //       uiSchema[rule.displayProperty]["ui:options"].displayControls = true;
-      //     } else if(rule.hideProperty) {
-      //       uiSchema[rule.hideProperty]["ui:options"].displayControls = false;
-      //     }
-      //   }
-      // });
-      this.evaluateRules(schema.properties, '', this.props.rules, newFormData);
-      this.props.onChange(newFormData, options, uiSchemaGlobal);
+
+      let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, this.props.rules, newFormData);
+      this.props.onChange(newFormData, options, uiSchemaWithRules);
     };
   };
-
-  evaluateRules(obj, stack, rules, formData) {
-    let compScope = this;
-
-    for (var property in obj) {
-        if(obj[property]["type"] === 'object') {
-          let stackPaths = (stack + '.' + property).split(".");
-
-          let tempUiSchema = uiSchemaGlobal;
-          for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-            if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-              tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-            }
-          }
-
-          if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
-            tempUiSchema["ui:options"] = {};
-          }
-
-          tempUiSchema["ui:options"].displayControls = true;
-
-          compScope.evaluateRules(obj[property].properties, stack + '.' + property, rules, formData);
-        } else {
-          let stackPaths = (stack + '.' + property).split(".");
-          stackPaths[0] = "form";
-
-          let rulesObj = rules;
-
-          for (let pathCount = 0; pathCount < stackPaths.length - 1; pathCount++) {
-            if(rulesObj[stackPaths[pathCount]] !== null && rulesObj[stackPaths[pathCount]] !== undefined) {
-              rulesObj = rulesObj[stackPaths[pathCount]];
-            } else {
-              rulesObj = [];
-              break;
-            }
-          }
-
-          let results =_.filter(rulesObj.rules, function(rule){
-              return rule.displayProperty === stackPaths[stackPaths.length-1];
-          });
-
-          if(results.length === 1) {
-            let propValue = formData;
-            for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
-              if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
-                propValue = propValue[stackPaths[pathCount]];
-              } else {
-                propValue = null;
-                break;
-              }
-            }
-
-            if(propValue !== null) {
-              if(propValue[results[0].property] !== undefined && propValue[results[0].property] !== null){
-                propValue = propValue[results[0].property];
-              } else {
-                propValue = null;
-              }
-            }
-
-            let tempUiSchema = uiSchemaGlobal;
-
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            if(propValue === results[0].value) {
-              tempUiSchema["ui:options"].displayControls = true;
-            } else {
-              tempUiSchema["ui:options"].displayControls = false;
-            }
-
-          } else {
-            let tempUiSchema = uiSchemaGlobal;
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            tempUiSchema["ui:options"].displayControls = true;
-          }
-        }
-    }
-  }
 
   render() {
     const {
