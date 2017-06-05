@@ -70,88 +70,56 @@ export function evaluateRulesWrapperFunction(obj, stack, uiSchema, rules, formDa
   let compScope = this;
 
   function evaluateRules(obj, stack) {
-
     for (var property in obj) {
-        if(obj[property]["type"] === 'object') {
-          let stackPaths = (stack + '.' + property).split(".");
+      let stackPaths = (stack + '.' + property).split(".");
+      let tempUiSchema = uiSchemaClosure;
 
-          let tempUiSchema = uiSchemaClosure;
-          for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-            if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-              tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-            }
-          }
+      for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
+        if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
+          tempUiSchema = tempUiSchema[stackPaths[pathCount]];
+        }
+      }
 
-          if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
-            tempUiSchema["ui:options"] = {};
-          }
+      if(obj[property]["type"] === 'object') {
+        if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
+          tempUiSchema["ui:options"] = {};
+        }
+        tempUiSchema["ui:options"].displayControls = true;
+        
+        evaluateRules(obj[property].properties, stack + '.' + property);
+      } else {
+        stackPaths[0] = "form";
 
-          tempUiSchema["ui:options"].displayControls = true;
-
-          evaluateRules(obj[property].properties, stack + '.' + property);
-        } else {
-          let stackPaths = (stack + '.' + property).split(".");
-          stackPaths[0] = "form";
-
-          let rulesObj = rules;
-
-          for (let pathCount = 0; pathCount < stackPaths.length - 1; pathCount++) {
-            if(rulesObj[stackPaths[pathCount]] !== null && rulesObj[stackPaths[pathCount]] !== undefined) {
-              rulesObj = rulesObj[stackPaths[pathCount]];
+        //If Rule Exists
+        if(obj[property]["rule"] !== null && obj[property]["rule"] !== undefined) {
+          //Get monitorProperty
+          let propValue = formData;
+          for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
+            if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
+              propValue = propValue[stackPaths[pathCount]];
             } else {
-              rulesObj = [];
+              propValue = null;
               break;
             }
           }
 
-          let results =_.filter(rulesObj.rules, function(rule){
-              return rule.displayProperty === stackPaths[stackPaths.length-1];
-          });
-
-          if(results.length === 1) {
-            let propValue = formData;
-            for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
-              if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
-                propValue = propValue[stackPaths[pathCount]];
-              } else {
-                propValue = null;
-                break;
-              }
-            }
-
-            if(propValue !== null) {
-              if(propValue[results[0].property] !== undefined && propValue[results[0].property] !== null){
-                propValue = propValue[results[0].property];
-              } else {
-                propValue = null;
-              }
-            }
-
-            let tempUiSchema = uiSchemaClosure;
-
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            if(propValue === results[0].value) {
-              tempUiSchema["ui:options"].displayControls = true;
-            } else {
-              tempUiSchema["ui:options"].displayControls = false;
-            }
-
-          } else {
-            let tempUiSchema = uiSchemaClosure;
-            for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
-              if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
-                tempUiSchema = tempUiSchema[stackPaths[pathCount]];
-              }
-            }
-
-            tempUiSchema["ui:options"].displayControls = true;
+          if(propValue !== null) {
+            propValue = propValue[obj[property]["rule"].monitorProperty];
           }
+
+          for (let actionCount = 0; actionCount < obj[property]["rule"].actions.length; actionCount++) {
+            if(propValue === obj[property]["rule"].actions[actionCount].value) {
+              if(obj[property]["rule"].actions[actionCount].propertyAction === "show") {
+                tempUiSchema["ui:options"].displayControls = true;
+              } else if(obj[property]["rule"].actions[actionCount].propertyAction === "hide") {
+                tempUiSchema["ui:options"].displayControls = false;
+              }
+            }
+          }
+        } else {
+          tempUiSchema["ui:options"].displayControls = true;
         }
+      }
     }
   }
 

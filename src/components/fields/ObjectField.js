@@ -34,7 +34,6 @@ class ObjectField extends Component {
   onPropertyChange = name => {
     return (value, options) => {
       const newFormData = { ...this.props.formData, [name]: value };
-
       let uiSchema = {...this.props.uiSchema};
       let schema = {...this.props.schema};
 

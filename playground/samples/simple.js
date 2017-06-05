@@ -21,7 +21,20 @@ module.exports = [
         },
         age: {
           type: "integer",
-          title: "Age"
+          title: "Age",
+          rule: {
+            monitorProperty: "showAge",
+            actions: [
+              {
+                value: true,
+                propertyAction: "show"
+              },
+              {
+                value: false,
+                propertyAction: "hide"
+              }
+            ]
+          }
         },
         rxntmastercontrol: {
           type: "object",
@@ -32,7 +45,20 @@ module.exports = [
             },
             city: {
               type: "string",
-              title: "City"
+              title: "City",
+              rule: {
+                monitorProperty: "showCity",
+                actions: [
+                  {
+                    value: true,
+                    propertyAction: "show"
+                  },
+                  {
+                    value: false,
+                    propertyAction: "hide"
+                  }
+                ]
+              }
             },
             state: {
               type: "string",
@@ -231,27 +257,13 @@ module.exports = [
       form : {
         rules: [
           {
-            property: "showAge",
-            value: true,
-            displayProperty: "age"
-          },
-          {
-            property: "showAge",
-            value: false,
-            hideProperty: "age"
+            publishProperty: "showAge"
           }
         ],
         rxntmastercontrol: {
           rules: [
             {
-              property: "showCity",
-              value: true,
-              displayProperty: "city"
-            },
-            {
-              property: "showCity",
-              value: false,
-              hideProperty: "city"
+              publishProperty: "showCity"
             }
           ]
         }
