@@ -293,7 +293,7 @@ class App extends Component {
     const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = form1[0];
     //this.evaluateTemp(schema.properties);
     //uiSchemaClosure = uiSchema;
-    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, rules, formData);
+    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
     this.state = {
       form: false,
@@ -346,7 +346,7 @@ class App extends Component {
 
     //uiSchemaClosure = uiSchema;
     //this.evaluateRules(schema.properties, '', rules, formData);
-    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, rules, formData);
+    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
     this.setState({
       uiSchema: uiSchemaWithRules,

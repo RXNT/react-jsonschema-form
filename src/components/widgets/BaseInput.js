@@ -16,7 +16,7 @@ function BaseInput(props) {
   } = props;
 
   const _onChange = ({ target: { value } }) => {
-    return props.onChange(value === "" ? undefined : value);
+    return props.onChange(value === "" ? undefined : value, {id: props.id});
   };
 
   let classNames = "form-control"

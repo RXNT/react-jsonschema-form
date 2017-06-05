@@ -13,6 +13,10 @@ function CheckboxWidget(props) {
     onChange,
   } = props;
 
+  const _onChange = (value) => {
+    return onChange(value === "" ? undefined : value, {id: props.id});
+  };
+
   return (
     <div className={`checkbox ${disabled ? "disabled" : ""}`}>
       {schema.description &&
@@ -25,7 +29,7 @@ function CheckboxWidget(props) {
           required={required}
           disabled={disabled}
           autoFocus={autofocus}
-          onChange={event => onChange(event.target.checked)}
+          onChange={event => _onChange(event.target.checked)}
         />
         <span>{label}</span>
       </label>

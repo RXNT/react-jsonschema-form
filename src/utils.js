@@ -65,7 +65,7 @@ const defaultRegistry = {
   formContext: {},
 };
 
-export function evaluateRulesWrapperFunction(obj, stack, uiSchema, rules, formData) {
+export function evaluateRulesWrapperFunction(obj, stack, uiSchema, formData) {
   let uiSchemaClosure = uiSchema;
   let compScope = this;
 
@@ -85,7 +85,7 @@ export function evaluateRulesWrapperFunction(obj, stack, uiSchema, rules, formDa
           tempUiSchema["ui:options"] = {};
         }
         tempUiSchema["ui:options"].displayControls = true;
-        
+
         evaluateRules(obj[property].properties, stack + '.' + property);
       } else {
         stackPaths[0] = "form";

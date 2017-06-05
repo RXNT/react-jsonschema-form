@@ -36,9 +36,39 @@ class ObjectField extends Component {
       const newFormData = { ...this.props.formData, [name]: value };
       let uiSchema = {...this.props.uiSchema};
       let schema = {...this.props.schema};
+      let uiSchemaWithRules = uiSchema;
+      let evaluateRules = false;
 
-      let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, this.props.rules, newFormData);
-      this.props.onChange(newFormData, options, uiSchemaWithRules);
+      if(options !== null && options !== undefined) {
+        if(options.id !== null && options.id !== undefined) {
+          const idPaths = options.id.split("_");
+          idPaths[0] = "form";
+          if(this.props.rules !== null && this.props.rules !== undefined) {
+            let tempRules = this.props.rules;
+
+            for (let pathCount = 0; pathCount < idPaths.length - 1; pathCount++) {
+              if(tempRules[idPaths[pathCount]] !== null && tempRules[idPaths[pathCount]] !== undefined) {
+                tempRules = tempRules[idPaths[pathCount]];
+              } else {
+                tempRules = null;
+                break;
+              }
+            }
+
+            if(tempRules !== null  && tempRules !== undefined) {
+              if(tempRules.publishProperties.indexOf(idPaths[idPaths.length - 1]) >= 0) {
+                evaluateRules = true;
+                uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, newFormData);
+                this.props.onChange(newFormData, options, uiSchemaWithRules);
+              }
+            }
+          }
+        }
+      }
+
+      if(!evaluateRules) {
+        this.props.onChange(newFormData, options, uiSchemaWithRules);
+      }
     };
   };
 

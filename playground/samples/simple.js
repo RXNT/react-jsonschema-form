@@ -255,16 +255,12 @@ module.exports = [
     },
     rules: {
       form : {
-        rules: [
-          {
-            publishProperty: "showAge"
-          }
+        publishProperties: [
+          "showAge"
         ],
         rxntmastercontrol: {
-          rules: [
-            {
-              publishProperty: "showCity"
-            }
+          publishProperties: [
+            "showCity"
           ]
         }
       }
