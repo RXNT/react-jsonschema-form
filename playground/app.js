@@ -284,16 +284,20 @@ function ThemeSelector({ theme, select }) {
 class App extends Component {
   constructor(props) {
     super(props);
+    let completeSchema = samples.Simple;
+    const currentFormNo = 1;
 
-    let form1 =_.filter(samples.Simple, function(sample){
-        return sample.form === 1;
+    let formIndex =_.findIndex(completeSchema, function(sample){
+        return sample.form === currentFormNo;
     });
 
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = form1[0];
+    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema[formIndex];
     //this.evaluateTemp(schema.properties);
     //uiSchemaClosure = uiSchema;
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
+
+    completeSchema[formIndex].uiSchema = uiSchemaWithRules;
 
     this.state = {
       form: false,
@@ -308,22 +312,20 @@ class App extends Component {
       rules,
       formDataSrc,
       formNo: 1,
-      noOfForms: samples.Simple.length
+      noOfForms: samples.Simple.length,
+      completeSchema: completeSchema
     };
   }
 
   componentDidMount() {
-    this.load(samples.Simple, 0);
+    this.load(this.state.completeSchema, 1);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shouldRender(this, nextProps, nextState);
   }
 
-  load = (data, formNoIncrementBy) => {
-
-    let formNo = this.state.formNo + formNoIncrementBy;
-
+  load = (data, formNo) => {
     let formInfo =_.filter(data, function(sample){
         return sample.form === formNo;
     });
@@ -349,6 +351,7 @@ class App extends Component {
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
     this.setState({
+      completeSchema: data,
       uiSchema: uiSchemaWithRules,
       rules,
       formNo: formNo
@@ -379,18 +382,19 @@ class App extends Component {
     this.setState({ formData });
   };
 
-  showNextPage = ({ formData }) => {
-    if(this.state.formNo < this.state.noOfForms) {
-      let formNoIncrementBy = 1;
-      this.load(samples.Simple, formNoIncrementBy);
-    }
-  }
+  changeForm = (frmNo) => {
+    let compScope = this;
 
-  showPreviousPage = () => {
-    if(this.state.formNo > 1) {
-      let formNoIncrementBy = -1;
-      this.load(samples.Simple, formNoIncrementBy);
-    }
+    let formIndex =_.findIndex(compScope.state.completeSchema, function(sample){
+        return sample.form === compScope.state.formNo;
+    });
+
+    let completeSchema = this.state.completeSchema;
+
+    completeSchema[formIndex].formData = this.state.formData;
+    completeSchema[formIndex].uiSchema = this.state.uiSchema;
+
+    this.load(completeSchema, frmNo);
   }
 
   render() {
@@ -411,88 +415,86 @@ class App extends Component {
       noOfForms,
     } = this.state;
 
+    let compScope = this;
+    let tabs = samples.Simple.map(function(item, index) {
+      let activeClassName = "";
+      if(item.form === compScope.state.formNo) {
+        activeClassName = "active";
+      }
+      return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
+    });
+
     return (
       <div className="container-fluid">
         <div className="page-header">
           <h1>react-jsonschema-form</h1>
-          <div className="row">
-            <div className="col-sm-8">
-              <Selector onSelected={this.load} />
-            </div>
-            <div className="col-sm-2">
-              <Form
-                schema={liveValidateSchema}
-                formData={liveValidate}
-                onChange={this.setLiveValidate}>
-                <div />
-              </Form>
-            </div>
-            <div className="col-sm-2">
-              <ThemeSelector theme={theme} select={this.onThemeSelected} />
-            </div>
-          </div>
         </div>
-        <div className="col-sm-8">
-          <Editor
-            title="JSONSchema"
-            theme={editor}
-            code={toJson(schema)}
-            onChange={this.onSchemaEdited}
-          />
-
-          <div className="row">
-            <div className="col-sm-4">
-              <Editor
-                title="UISchema"
-                theme={editor}
-                code={toJson(uiSchema)}
-                onChange={this.onUISchemaEdited}
-              />
+        <div className="row">
+            <div className="col-sm-12">
+              <div className="tab">
+                {tabs}
+              </div>
             </div>
-            <div className="col-sm-4">
-              <Editor
-                title="formData"
-                theme={editor}
-                code={toJson(formData)}
-                onChange={this.onFormDataEdited}
-              />
-            </div>
-            <div className="col-sm-4">
-                {formLayout !== null && formLayout !== undefined && <Editor
-                  title="Form Layout"
-                  theme={editor}
-                  code={toJson(formLayout)}
-                  onChange={this.onFormLayoutEdited}
+        </div>
+        <div className="row">
+          <div className="col-sm-8">
+              {this.state.form &&
+                <Form
+                  ArrayFieldTemplate={ArrayFieldTemplate}
+                  liveValidate={liveValidate}
+                  schema={schema}
+                  uiSchema={uiSchema}
+                  formData={formData}
+                  formLayout={formLayout}
+                  onChange={this.onFormDataChange}
+                  fields={{ geo: GeoPosition }}
+                  validate={validate}
+                  onBlur={(id, value) =>
+                    console.log(`Touched ${id} with value ${value}`)}
+                  transformErrors={transformErrors}
+                  onError={log("errors")}
+                  rules={rules}
+                  formDataSrc={formDataSrc}
                 />}
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-12">
+            <Editor
+              title="JSONSchema"
+              theme={editor}
+              code={toJson(schema)}
+              onChange={this.onSchemaEdited}
+            />
+
+            <div className="row">
+              <div className="col-sm-4">
+                <Editor
+                  title="UISchema"
+                  theme={editor}
+                  code={toJson(uiSchema)}
+                  onChange={this.onUISchemaEdited}
+                />
+              </div>
+              <div className="col-sm-4">
+                <Editor
+                  title="formData"
+                  theme={editor}
+                  code={toJson(formData)}
+                  onChange={this.onFormDataEdited}
+                />
+              </div>
+              <div className="col-sm-4">
+                  {formLayout !== null && formLayout !== undefined && <Editor
+                    title="Form Layout"
+                    theme={editor}
+                    code={toJson(formLayout)}
+                    onChange={this.onFormLayoutEdited}
+                  />}
+              </div>
             </div>
           </div>
-
         </div>
-        <div className="col-sm-4">
-          {this.state.form &&
-            <Form
-              ArrayFieldTemplate={ArrayFieldTemplate}
-              liveValidate={liveValidate}
-              schema={schema}
-              uiSchema={uiSchema}
-              formData={formData}
-              formLayout={formLayout}
-              onChange={this.onFormDataChange}
-              onSubmit= {this.showNextPage}
-              onPrevious = {this.showPreviousPage}
-              fields={{ geo: GeoPosition }}
-              validate={validate}
-              onBlur={(id, value) =>
-                console.log(`Touched ${id} with value ${value}`)}
-              transformErrors={transformErrors}
-              onError={log("errors")}
-              rules={rules}
-              formDataSrc={formDataSrc}
-              formNo={formNo}
-              noOfForms={noOfForms}
-            />}
-        </div>
-
       </div>
     );
   }

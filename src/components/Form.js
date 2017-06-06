@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from "react";
+const ReactGridLayout = require('react-grid-layout');
 
 import { default as DefaultErrorList } from "./ErrorList";
 import {
@@ -178,54 +179,41 @@ export default class Form extends Component {
     const registry = this.getRegistry();
     const _SchemaField = registry.fields.SchemaField;
 
-    let submitButtonText = "Next";
-    let displayPrevButton = false;
-
-    if(formNo === noOfForms) {
-      submitButtonText = "Submit";
-    }
-
-    if(formNo > 1) {
-      displayPrevButton = true;
-    }
-
     return (
-      <form
-        className={className ? className : "rjsf"}
-        id={id}
-        name={name}
-        method={method}
-        target={target}
-        action={action}
-        autoComplete={autocomplete}
-        encType={enctype}
-        acceptCharset={acceptcharset}
-        noValidate={noHtml5Validate}
-        onSubmit={this.onSubmit}>
-        {this.renderErrors()}
-        <_SchemaField
-          schema={schema}
-          uiSchema={uiSchema}
-          rules={rules}
-          formDataSrc={formDataSrc}
-          errorSchema={errorSchema}
-          idSchema={idSchema}
-          formData={formData}
-          onChange={this.onChange}
-          onBlur={this.onBlur}
-          registry={registry}
-          formLayout={formLayout}
-          safeRenderCompletion={safeRenderCompletion}
-        />
-        <br/>
-        <br/>
-        {children
-          ? children
-          : <p>
-              {displayPrevButton && <button type="button" className="btn btn-info" onClick={this.onPrevious}>Previous</button>}
-              <button type="submit" className="btn btn-info pull-right">{submitButtonText}</button>
-            </p>}
-      </form>
+        <form
+          className={className ? className : "rjsf"}
+          id={id}
+          name={name}
+          method={method}
+          target={target}
+          action={action}
+          autoComplete={autocomplete}
+          encType={enctype}
+          acceptCharset={acceptcharset}
+          noValidate={noHtml5Validate}
+          onSubmit={this.onSubmit}>
+          {this.renderErrors()}
+          <_SchemaField
+            schema={schema}
+            uiSchema={uiSchema}
+            rules={rules}
+            formDataSrc={formDataSrc}
+            errorSchema={errorSchema}
+            idSchema={idSchema}
+            formData={formData}
+            onChange={this.onChange}
+            onBlur={this.onBlur}
+            registry={registry}
+            formLayout={formLayout}
+            safeRenderCompletion={safeRenderCompletion}
+          />
+          {children
+            ? children
+            : <p>
+                <button type="submit" className="btn btn-info">Submit</button>
+              </p>}
+        </form>
+
     );
   }
 }
@@ -264,8 +252,5 @@ if (process.env.NODE_ENV !== "production") {
     formContext: PropTypes.object,
     rules: PropTypes.object,
     formDataSrc: PropTypes.object,
-    formNo: PropTypes.number,
-    noOfForms: PropTypes.number,
-    onPrevious: PropTypes.func,
   };
 }

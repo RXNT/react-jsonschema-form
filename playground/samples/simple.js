@@ -1,6 +1,7 @@
 module.exports = [
   {
     form: 1,
+    title: "Form #1",
     schema: {
       title: "A registration form",
       description: "A simple form example.",
@@ -87,7 +88,6 @@ module.exports = [
     },
     uiSchema: {
       firstName: {
-        "ui:autofocus": true,
         "ui:options": {
           "titleClassNames": ["text-uppercase", "col-md-3"],
           "controlClassNames": ["col-md-8"],
@@ -205,26 +205,26 @@ module.exports = [
     formLayout: {
       form: {
         layout: [
-          {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
-          {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
-          {i: 'showRxNTMasterControl', x: 0, y: 1, w: 4, h: 1},
-          {i: 'rxntmastercontrol', x: 0, y: 2, w: 4, h: 7},
-          {i: 'patients', x: 0, y: 3, w: 4, h: 6},
+          {i: 'firstName', x: 0, y: 0, w: 4, h: 1},
+          {i: 'lastName', x: 4, y: 0, w: 4, h: 1},
+          {i: 'showRxNTMasterControl', x: 0, y: 1, w: 8, h: 1},
+          {i: 'rxntmastercontrol', x: 0, y: 2, w: 8, h: 7},
+          {i: 'patients', x: 0, y: 3, w: 8, h: 6},
         ]
       },
       rxntmastercontrol: {
         layout: [
-          {i: 'showCity', x: 0, y: 0, w: 2, h: 1},
-          {i: 'city', x: 0, y: 1, w: 2, h: 1},
-          {i: 'state', x: 0, y: 2, w: 2, h: 1},
-          {i: 'country', x: 0, y: 3, w: 2, h: 1},
-          {i: 'zip', x: 0, y: 4, w: 4, h: 1},
+          {i: 'showCity', x: 0, y: 0, w: 4, h: 1},
+          {i: 'city', x: 0, y: 1, w: 4, h: 1},
+          {i: 'state', x: 0, y: 2, w: 4, h: 1},
+          {i: 'country', x: 0, y: 3, w: 4, h: 1},
+          {i: 'zip', x: 0, y: 4, w: 8, h: 1},
         ]
       },
       zip: {
         layout: [
-          {i: 'zipcode', x: 0, y: 0, w: 2, h: 1},
-          {i: 'zipextension', x: 0, y: 1, w: 2, h: 1},
+          {i: 'zipcode', x: 0, y: 0, w: 4, h: 1},
+          {i: 'zipextension', x: 0, y: 1, w: 4, h: 1},
         ]
       }
     },
@@ -232,13 +232,9 @@ module.exports = [
       rxntmastercontrol: {
         country: [
           {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
-          {id: 2, name: 'New Mexico', population: 2059192, capital: 'Santa Fe', region: 'West'},
-          {id: 3, name: 'New York', population: 19378087, capital: 'Albany', region: 'Northeast'},
-          {id: 4, name: 'North Carolina', population: 9535692, capital: 'Raleigh', region: 'South'},
           {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
           {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
           {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
-          {id: 8, name: 'Mississippi', population: 2968103, capital: 'Jackson', region: 'South'},
         ]
       }
     },
@@ -257,6 +253,7 @@ module.exports = [
  },
  {
     form: 2,
+    title: "Form #2",
     schema: {
       title: "form 2",
       description: "form 2",
@@ -270,7 +267,6 @@ module.exports = [
     },
     uiSchema: {
       middleName: {
-        "ui:autofocus": true,
         "ui:options": {
           "titleClassNames": ["text-uppercase", "col-md-6"],
           "controlClassNames": ["col-md-5"],
@@ -286,10 +282,11 @@ module.exports = [
         ]
       },
     },
-    rules: []
+    rules: {}
  },
  {
     form: 3,
+    title: "Form #3",
     schema: {
       title: "form 3",
       description: "form 3",
@@ -303,7 +300,6 @@ module.exports = [
     },
     uiSchema: {
       lastName: {
-        "ui:autofocus": true,
         "ui:options": {
           "titleClassNames": ["text-uppercase", "col-md-6"],
           "controlClassNames": ["col-md-5"],
@@ -319,6 +315,6 @@ module.exports = [
         ]
       },
     },
-    rules: []
+    rules: {}
  }
 ]
