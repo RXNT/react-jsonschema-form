@@ -15,15 +15,14 @@ module.exports = [
           type: "string",
           title: "LN"
         },
-        showAge: {
+        showRxNTMasterControl: {
           type: "boolean",
-          title: "Show Age",
+          title: "Show Master Control",
         },
-        age: {
-          type: "integer",
-          title: "Age",
+        rxntmastercontrol: {
+          type: "object",
           rule: {
-            monitorProperty: "showAge",
+            monitorProperty: "showRxNTMasterControl",
             actions: [
               {
                 value: true,
@@ -34,10 +33,7 @@ module.exports = [
                 propertyAction: "hide"
               }
             ]
-          }
-        },
-        rxntmastercontrol: {
-          type: "object",
+          },
           properties: {
             showCity: {
               type: "boolean",
@@ -103,13 +99,7 @@ module.exports = [
           "controlClassNames": ["col-md-8"],
         },
       },
-      showAge: {
-        "ui:options": {
-          "titleClassNames": ["text-uppercase", "col-md-3"],
-          "controlClassNames": ["col-md-8"],
-        },
-      },
-      age: {
+      showRxNTMasterControl: {
         "ui:options": {
           "titleClassNames": ["text-uppercase", "col-md-3"],
           "controlClassNames": ["col-md-8"],
@@ -193,7 +183,7 @@ module.exports = [
     formData: {
       firstName: "Rajaram",
       lastName: "G",
-      showAge: true,
+      showRxNTMasterControl: true,
       patients: [
        {
          patientId: 40567,
@@ -217,10 +207,9 @@ module.exports = [
         layout: [
           {i: 'firstName', x: 0, y: 0, w: 2, h: 1},
           {i: 'lastName', x: 2, y: 0, w: 2, h: 1},
-          {i: 'showAge', x: 0, y: 1, w: 4, h: 1},
-          {i: 'age', x: 0, y: 2, w: 4, h: 1},
-          {i: 'rxntmastercontrol', x: 0, y: 3, w: 4, h: 7},
-          {i: 'patients', x: 0, y: 4, w: 4, h: 6},
+          {i: 'showRxNTMasterControl', x: 0, y: 1, w: 4, h: 1},
+          {i: 'rxntmastercontrol', x: 0, y: 2, w: 4, h: 7},
+          {i: 'patients', x: 0, y: 3, w: 4, h: 6},
         ]
       },
       rxntmastercontrol: {
@@ -256,7 +245,7 @@ module.exports = [
     rules: {
       form : {
         publishProperties: [
-          "showAge"
+          "showRxNTMasterControl"
         ],
         rxntmastercontrol: {
           publishProperties: [

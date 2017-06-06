@@ -65,6 +65,40 @@ const defaultRegistry = {
   formContext: {},
 };
 
+function executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData) {
+  //If Rule Exists
+  if(obj[property]["rule"] !== null && obj[property]["rule"] !== undefined) {
+    //Get monitorProperty
+    let propValue = formData;
+    for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
+      if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
+        propValue = propValue[stackPaths[pathCount]];
+      } else {
+        propValue = null;
+        break;
+      }
+    }
+
+    if(propValue !== null) {
+      propValue = propValue[obj[property]["rule"].monitorProperty];
+    }
+
+    for (let actionCount = 0; actionCount < obj[property]["rule"].actions.length; actionCount++) {
+      if(propValue === obj[property]["rule"].actions[actionCount].value) {
+        if(obj[property]["rule"].actions[actionCount].propertyAction === "show") {
+          tempUiSchema["ui:options"].displayControls = true;
+        } else if(obj[property]["rule"].actions[actionCount].propertyAction === "hide") {
+          tempUiSchema["ui:options"].displayControls = false;
+        }
+      }
+    }
+  } else {
+    tempUiSchema["ui:options"].displayControls = true;
+  }
+
+  return tempUiSchema;
+}
+
 export function evaluateRulesWrapperFunction(obj, stack, uiSchema, formData) {
   let uiSchemaClosure = uiSchema;
   let compScope = this;
@@ -84,41 +118,12 @@ export function evaluateRulesWrapperFunction(obj, stack, uiSchema, formData) {
         if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
           tempUiSchema["ui:options"] = {};
         }
-        tempUiSchema["ui:options"].displayControls = true;
 
+        tempUiSchema = executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData);
         evaluateRules(obj[property].properties, stack + '.' + property);
       } else {
         stackPaths[0] = "form";
-
-        //If Rule Exists
-        if(obj[property]["rule"] !== null && obj[property]["rule"] !== undefined) {
-          //Get monitorProperty
-          let propValue = formData;
-          for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
-            if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
-              propValue = propValue[stackPaths[pathCount]];
-            } else {
-              propValue = null;
-              break;
-            }
-          }
-
-          if(propValue !== null) {
-            propValue = propValue[obj[property]["rule"].monitorProperty];
-          }
-
-          for (let actionCount = 0; actionCount < obj[property]["rule"].actions.length; actionCount++) {
-            if(propValue === obj[property]["rule"].actions[actionCount].value) {
-              if(obj[property]["rule"].actions[actionCount].propertyAction === "show") {
-                tempUiSchema["ui:options"].displayControls = true;
-              } else if(obj[property]["rule"].actions[actionCount].propertyAction === "hide") {
-                tempUiSchema["ui:options"].displayControls = false;
-              }
-            }
-          }
-        } else {
-          tempUiSchema["ui:options"].displayControls = true;
-        }
+        tempUiSchema = executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData);
       }
     }
   }
