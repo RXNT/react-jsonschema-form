@@ -68,13 +68,30 @@ module.exports = [
             zip: {
               type: "object",
               properties: {
+                showZipExtn: {
+                  type: "boolean",
+                  title: "Show Zip Extn",
+                },
                 zipcode: {
                   type: "string",
                   title: "zip"
                 },
                 zipextension: {
                   type: "string",
-                  title: "extension"
+                  title: "extension",
+                  rule: {
+                    monitorProperty: "showZipExtn",
+                    actions: [
+                      {
+                        value: true,
+                        propertyAction: "show"
+                      },
+                      {
+                        value: false,
+                        propertyAction: "hide"
+                      }
+                    ]
+                  },
                 },
               }
             }
@@ -136,6 +153,12 @@ module.exports = [
           },
         },
         zip: {
+          showZipExtn: {
+            "ui:options": {
+              "titleClassNames": ["text-uppercase", "col-md-3"],
+              "controlClassNames": ["col-md-8"],
+            },
+          },
           zipcode: {
             "ui:options": {
               "titleClassNames": ["text-uppercase", "col-md-3"],
@@ -208,7 +231,7 @@ module.exports = [
           {i: 'firstName', x: 0, y: 0, w: 4, h: 1},
           {i: 'lastName', x: 4, y: 0, w: 4, h: 1},
           {i: 'showRxNTMasterControl', x: 0, y: 1, w: 8, h: 1},
-          {i: 'rxntmastercontrol', x: 0, y: 2, w: 8, h: 7},
+          {i: 'rxntmastercontrol', x: 0, y: 2, w: 8, h: 8},
           {i: 'patients', x: 0, y: 3, w: 8, h: 6},
         ]
       },
@@ -218,13 +241,14 @@ module.exports = [
           {i: 'city', x: 0, y: 1, w: 4, h: 1},
           {i: 'state', x: 0, y: 2, w: 4, h: 1},
           {i: 'country', x: 0, y: 3, w: 4, h: 1},
-          {i: 'zip', x: 0, y: 4, w: 8, h: 1},
+          {i: 'zip', x: 0, y: 5, w: 8, h: 2},
         ]
       },
       zip: {
         layout: [
-          {i: 'zipcode', x: 0, y: 0, w: 4, h: 1},
-          {i: 'zipextension', x: 0, y: 1, w: 4, h: 1},
+          {i: 'showZipExtn', x: 0, y: 0, w: 4, h: 1},
+          {i: 'zipcode', x: 0, y: 1, w: 4, h: 1},
+          {i: 'zipextension', x: 0, y: 2, w: 4, h: 1},
         ]
       }
     },
@@ -245,8 +269,13 @@ module.exports = [
         ],
         rxntmastercontrol: {
           publishProperties: [
-            "showCity"
-          ]
+            "showCity",
+          ],
+          zip: {
+              publishProperties: [
+                "showZipExtn"
+              ]
+          }
         }
       }
     }
