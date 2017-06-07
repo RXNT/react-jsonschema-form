@@ -12,6 +12,7 @@ function BaseInput(props) {
     schema,
     formContext,
     registry,
+    readOnlyForm,
     ...inputProps
   } = props;
 
@@ -30,7 +31,7 @@ function BaseInput(props) {
     <input
       {...inputProps}
       className={classNames}
-      readOnly={readonly}
+      readOnly={readOnlyForm? readOnlyForm : readonly}
       autoFocus={autofocus}
       value={value == null ? "" : value}
       onChange={_onChange}

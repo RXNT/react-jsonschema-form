@@ -86,6 +86,7 @@ class ObjectField extends Component {
       formLayout,
       rules,
       formDataSrc,
+      readOnlyForm,
     } = this.props;
 
     const { definitions, fields, formContext } = this.props.registry;
@@ -146,6 +147,7 @@ class ObjectField extends Component {
         readonly={readonly}
         options={options}
         parentName={name}
+        readOnlyForm={readOnlyForm}
       />;
     });
 

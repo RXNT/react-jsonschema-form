@@ -23,6 +23,7 @@ function TypeAheadField(props) {
     onBlur,
     formDataSrc,
     parentName,
+    readOnlyForm,
   } = props;
 
   const { title, format } = schema;
@@ -55,6 +56,7 @@ function TypeAheadField(props) {
       formDataSrc={formDataSrc}
       name={name}
       parentName={parentName}
+      readOnlyForm={readOnlyForm}
     />
   );
 }

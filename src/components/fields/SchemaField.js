@@ -146,7 +146,7 @@ DefaultTemplate.defaultProps = {
 };
 
 function SchemaFieldRender(props) {
-  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules, formDataSrc, parentName } = props;
+  const { uiSchema, errorSchema, idSchema, name, required, registry, options, rules, formDataSrc, parentName, readOnlyForm } = props;
   const {
     definitions,
     fields,
@@ -196,6 +196,7 @@ function SchemaFieldRender(props) {
       rules={rules}
       formDataSrc={formDataSrc}
       parentName={parentName}
+      readOnlyForm={readOnlyForm}
     />
   );
 
@@ -290,6 +291,7 @@ if (process.env.NODE_ENV !== "production") {
     }),
     rules: PropTypes.object,
     formDataSrc: PropTypes.object,
+    readOnlyForm: PropTypes.bool,
   };
 }
 

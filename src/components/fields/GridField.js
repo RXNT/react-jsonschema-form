@@ -21,6 +21,7 @@ function GridField(props) {
     registry,
     onChange,
     onBlur,
+    readOnlyForm,
   } = props;
 
   const { title, format } = schema;
@@ -50,6 +51,7 @@ function GridField(props) {
       registry={registry}
       placeholder={placeholder}
       uiSchema={uiSchema}
+      readOnlyForm={readOnlyForm}
     />
   );
 }

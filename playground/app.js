@@ -425,6 +425,8 @@ class App extends Component {
       completeSchema,
     } = this.state;
 
+    let currentFormReadOnly = false;
+
     let compScope = this;
     let tabs = completeSchema.document.map(function(item, index) {
       let activeClassName = "";
@@ -438,8 +440,7 @@ class App extends Component {
       });
 
       let hideForm = false;
-      let disableForm = false;
-      let disableCSSName = "";
+      let readOnlyForm = false;
 
       if(formRule.length > 0) {
         const monitorFormInfo =_.filter(completeSchema.document, function(formInfo){
@@ -463,17 +464,21 @@ class App extends Component {
               if(formRule[0].actions[actionCount].propertyAction === "hide") {
                 hideForm = true;
               } else if(formRule[0].actions[actionCount].propertyAction === "disable") {
-                disableForm = true;
-                disableCSSName = " disable";
+                readOnlyForm = true;
               }
             }
           }
         }
       }
+
+      if(item.form === compScope.state.formNo) {
+        currentFormReadOnly = readOnlyForm;
+      }
+
       if(hideForm) {
         return null;
       } else {
-          return (<button key={index} disabled={disableForm} className={"tablinks " + activeClassName + disableCSSName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
+          return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
       }
     });
 
@@ -508,6 +513,7 @@ class App extends Component {
                   onError={log("errors")}
                   rules={rules}
                   formDataSrc={formDataSrc}
+                  readOnlyForm={currentFormReadOnly}
                 />}
           </div>
         </div>

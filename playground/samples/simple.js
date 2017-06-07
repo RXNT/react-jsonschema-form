@@ -357,10 +357,20 @@ module.exports = {
             type: "string",
             title: "form 3 Last Name"
           },
+          active: {
+            type: "boolean",
+            title: "Active",
+          },
         }
       },
       uiSchema: {
         lastName: {
+          "ui:options": {
+            "titleClassNames": ["text-uppercase", "col-md-6"],
+            "controlClassNames": ["col-md-5"],
+          },
+        },
+        active: {
           "ui:options": {
             "titleClassNames": ["text-uppercase", "col-md-6"],
             "controlClassNames": ["col-md-5"],
@@ -372,7 +382,8 @@ module.exports = {
       formLayout: {
         form: {
           layout: [
-            {i: 'lastName', x: 0, y: 0, w: 4, h: 1},
+            {i: 'lastName', x: 0, y: 0, w: 8, h: 1},
+            {i: 'active', x: 0, y: 1, w: 8, h: 1},
           ]
         },
       },

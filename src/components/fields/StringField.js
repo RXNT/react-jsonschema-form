@@ -21,6 +21,7 @@ function StringField(props) {
     registry,
     onChange,
     onBlur,
+    readOnlyForm,
   } = props;
 
   const { title, format } = schema;
@@ -49,6 +50,7 @@ function StringField(props) {
       autofocus={autofocus}
       registry={registry}
       placeholder={placeholder}
+      readOnlyForm={readOnlyForm}
     />
   );
 }

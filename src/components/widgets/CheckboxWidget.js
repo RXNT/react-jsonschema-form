@@ -11,6 +11,7 @@ function CheckboxWidget(props) {
     label,
     autofocus,
     onChange,
+    readOnlyForm,
   } = props;
 
   const _onChange = (value) => {
@@ -27,7 +28,7 @@ function CheckboxWidget(props) {
           id={id}
           checked={typeof value === "undefined" ? false : value}
           required={required}
-          disabled={disabled}
+          disabled={readOnlyForm? readOnlyForm: disabled}
           autoFocus={autofocus}
           onChange={event => _onChange(event.target.checked)}
         />

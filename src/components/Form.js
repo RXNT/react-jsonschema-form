@@ -206,6 +206,7 @@ export default class Form extends Component {
             registry={registry}
             formLayout={formLayout}
             safeRenderCompletion={safeRenderCompletion}
+            readOnlyForm={this.props.readOnlyForm}
           />
           {children
             ? children
@@ -250,5 +251,6 @@ if (process.env.NODE_ENV !== "production") {
     formContext: PropTypes.object,
     rules: PropTypes.object,
     formDataSrc: PropTypes.object,
+    readOnlyForm: PropTypes.bool,
   };
 }
