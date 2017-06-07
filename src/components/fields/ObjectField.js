@@ -45,7 +45,7 @@ class ObjectField extends Component {
           idPaths[0] = "form";
           if(this.props.rules !== null && this.props.rules !== undefined) {
             let tempRules = this.props.rules;
-            
+
             for (let pathCount = 0; pathCount < idPaths.length - 1; pathCount++) {
               if(tempRules[idPaths[pathCount]] !== null && tempRules[idPaths[pathCount]] !== undefined) {
                 tempRules = tempRules[idPaths[pathCount]];
@@ -71,16 +71,6 @@ class ObjectField extends Component {
       }
     };
   };
-
-  onLayoutChange = layout => {
-    console.log('onLayoutChange');
-    this.forceUpdate();
-  }
-
-  onResize() {
-    console.log('onResize');
-   this.forceUpdate();
-  }
 
   render() {
     const {
@@ -184,7 +174,7 @@ class ObjectField extends Component {
       });
 
 
-      parsedHtml = <ReactGridLayout className='layout' onResize={this.onResize} onLayoutChange={this.onLayoutChange} layout={currentObjectFormLayout} cols={12} rowHeight={30} width={1200}>
+      parsedHtml = <ReactGridLayout className='layout' layout={currentObjectFormLayout} cols={12} rowHeight={30} width={1200}>
                           {renderedElements}
                       </ReactGridLayout>;
     } else {

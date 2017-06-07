@@ -287,17 +287,17 @@ class App extends Component {
     let completeSchema = samples.Simple;
     const currentFormNo = 1;
 
-    let formIndex =_.findIndex(completeSchema, function(sample){
+    let formIndex =_.findIndex(completeSchema.document, function(sample){
         return sample.form === currentFormNo;
     });
 
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema[formIndex];
+    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema.document[formIndex];
     //this.evaluateTemp(schema.properties);
     //uiSchemaClosure = uiSchema;
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
-    completeSchema[formIndex].uiSchema = uiSchemaWithRules;
+    completeSchema.document[formIndex].uiSchema = uiSchemaWithRules;
 
     this.state = {
       form: false,
@@ -326,7 +326,7 @@ class App extends Component {
   }
 
   load = (data, formNo) => {
-    let formInfo =_.filter(data, function(sample){
+    let formInfo =_.filter(data.document, function(sample){
         return sample.form === formNo;
     });
 
@@ -379,20 +379,29 @@ class App extends Component {
   }
 
   onFormDataChange = ({ formData }) => {
-    this.setState({ formData });
+    let completeSchema = {...this.state.completeSchema};
+    let compScope = this;
+    let formIndex =_.findIndex(completeSchema.document, function(formInfo){
+        return formInfo.form === compScope.state.formNo;
+    });
+    completeSchema.document[formIndex].formData = formData;
+    this.setState({
+      completeSchema,
+      formData
+    });
   };
 
   changeForm = (frmNo) => {
     let compScope = this;
 
-    let formIndex =_.findIndex(compScope.state.completeSchema, function(sample){
+    let formIndex =_.findIndex(compScope.state.completeSchema.document, function(sample){
         return sample.form === compScope.state.formNo;
     });
 
     let completeSchema = this.state.completeSchema;
 
-    completeSchema[formIndex].formData = this.state.formData;
-    completeSchema[formIndex].uiSchema = this.state.uiSchema;
+    completeSchema.document[formIndex].formData = this.state.formData;
+    completeSchema.document[formIndex].uiSchema = this.state.uiSchema;
 
     this.load(completeSchema, frmNo);
   }
@@ -413,15 +422,59 @@ class App extends Component {
       formDataSrc,
       formNo,
       noOfForms,
+      completeSchema,
     } = this.state;
 
     let compScope = this;
-    let tabs = samples.Simple.map(function(item, index) {
+    let tabs = completeSchema.document.map(function(item, index) {
       let activeClassName = "";
       if(item.form === compScope.state.formNo) {
         activeClassName = "active";
       }
-      return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
+
+      //Check if document level rule exists for this form
+      let formRule =_.filter(completeSchema.rules, function(rule){
+          return rule.form === item.form;
+      });
+
+      let hideForm = false;
+      let disableForm = false;
+      let disableCSSName = "";
+
+      if(formRule.length > 0) {
+        const monitorFormInfo =_.filter(completeSchema.document, function(formInfo){
+            return formInfo.form === formRule[0].monitorProperty.form;
+        });
+        let monitorFormFrmData = monitorFormInfo[0].formData;
+        let stackPaths = (formRule[0].monitorProperty.propertyName).split(".");
+
+        for (let pathCount = 0; pathCount < stackPaths.length; pathCount++) {
+          if(monitorFormFrmData[stackPaths[pathCount]] !== null && monitorFormFrmData[stackPaths[pathCount]] !== undefined) {
+            monitorFormFrmData = monitorFormFrmData[stackPaths[pathCount]];
+          } else {
+            monitorFormFrmData = null;
+            break;
+          }
+        }
+
+        if(monitorFormFrmData !== null && monitorFormFrmData !== undefined) {
+          for (let actionCount = 0; actionCount < formRule[0].actions.length; actionCount++) {
+            if(monitorFormFrmData === formRule[0].actions[actionCount].value) {
+              if(formRule[0].actions[actionCount].propertyAction === "hide") {
+                hideForm = true;
+              } else if(formRule[0].actions[actionCount].propertyAction === "disable") {
+                disableForm = true;
+                disableCSSName = " disable";
+              }
+            }
+          }
+        }
+      }
+      if(hideForm) {
+        return null;
+      } else {
+          return (<button key={index} disabled={disableForm} className={"tablinks " + activeClassName + disableCSSName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
+      }
     });
 
     return (
