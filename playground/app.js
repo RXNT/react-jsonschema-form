@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 import Codemirror from "react-codemirror";
+import Glyphicon from 'react-bootstrap/lib/Glyphicon';
 const _ = require('lodash');
 import "codemirror/mode/javascript/javascript";
 
@@ -478,14 +479,16 @@ class App extends Component {
       if(hideForm) {
         return null;
       } else {
-          return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>{item.title}</button>)
+          return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>
+          {item.title} {(readOnlyForm && <Glyphicon glyph="lock" />)}
+          </button>)
       }
     });
 
     return (
       <div className="container-fluid">
-        <div className="page-header">
-          <h1>react-jsonschema-form</h1>
+        <div>
+          <h4>Dynamic Form</h4>
         </div>
         <div className="row">
             <div className="col-sm-12">
