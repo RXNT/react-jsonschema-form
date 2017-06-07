@@ -18,6 +18,7 @@ function TypeAheadWidget(props) {
     name,
     parentName,
     options,
+    readOnlyForm,
   } = props;
 
   const typeaheadDefinition = uiSchema["ui:options"]["typeaheadDefinition"];
@@ -26,12 +27,15 @@ function TypeAheadWidget(props) {
     return onChange(selectedRows);
   };
 
-  let parentCtrlName = parentName;
-  if(parentCtrlName === undefined) {
-    parentCtrlName = "form";
+  let typeAheadOptions = [];
+
+  if(parentName !== undefined) {
+    typeAheadOptions = formDataSrc[parentName][name];
+  } else {
+    typeAheadOptions = formDataSrc[name];
   }
 
-  let classNames = "form-control"
+  let classNames = "form-control";
   if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
     classNames = options.controlClassNames
                         .join(" ")
@@ -40,9 +44,9 @@ function TypeAheadWidget(props) {
 
   return (
     <div className={classNames}>
-      <Typeahead
+      <Typeahead disabled={readOnlyForm}
           labelKey={typeaheadDefinition.labelKey}
-          options={formDataSrc[parentCtrlName][name]}
+          options={typeAheadOptions}
           placeholder={typeaheadDefinition.placeholder}
           onChange={handleChange}
         />

@@ -357,6 +357,10 @@ module.exports = {
             type: "string",
             title: "form 3 Last Name"
           },
+          country: {
+            type: "typeahead",
+            title: "Country"
+          },
           active: {
             type: "boolean",
             title: "Active",
@@ -368,6 +372,17 @@ module.exports = {
           "ui:options": {
             "titleClassNames": ["text-uppercase", "col-md-6"],
             "controlClassNames": ["col-md-5"],
+          },
+        },
+        country: {
+          "ui:options": {
+            "typeaheadDefinition": {
+              "labelKey": "name",
+              "placeholder": "Choose a country",
+              "keyColumn": "id"
+            },
+            "titleClassNames": ["text-uppercase", "col-md-3"],
+            "controlClassNames": ["col-md-8"],
           },
         },
         active: {
@@ -383,9 +398,18 @@ module.exports = {
         form: {
           layout: [
             {i: 'lastName', x: 0, y: 0, w: 8, h: 1},
-            {i: 'active', x: 0, y: 1, w: 8, h: 1},
+            {i: 'country', x: 0, y: 1, w: 8, h: 1},
+            {i: 'active', x: 0, y: 2, w: 8, h: 1},
           ]
         },
+      },
+      formDataSrc: {
+        country: [
+          {id: 1, name: 'New Jersey', population: 8791936, capital: 'Trenton', region: 'Northeast'},
+          {id: 5, name: 'California', population: 37254503, capital: 'Sacramento', region: 'West'},
+          {id: 6, name: 'Florida', population: 18804623, capital: 'Tallahassee', region: 'South'},
+          {id: 7, name: 'Texas', population: 25146105, capital: 'Austin', region: 'South'},
+        ]
       },
       rules: {}
    }
