@@ -199,20 +199,24 @@ class App extends Component {
 
   onFormLayoutEdited = formLayout => this.setState({ formLayout });
 
-  onFormDataChange = ({ formData }) => {
+  onFormDataChange = ({ formData, uiSchema }) => {
+
     //Update formData available in state
     let completeSchema = {...this.state.completeSchema};
     let compScope = this;
 
-    //Find form to which we need to update formData
+    //Find current form definition
     let formIndex =_.findIndex(completeSchema.template, function(formInfo){
         return formInfo.form === compScope.state.formNo;
     });
 
+    //Update formData and uiSchema
     completeSchema.template[formIndex].formData = formData;
+    completeSchema.template[formIndex].uiSchema = uiSchema;
 
     this.setState({
       completeSchema,
+      uiSchema,
       formData
     });
   };
@@ -220,13 +224,14 @@ class App extends Component {
   changeForm = (frmNo) => {
     let compScope = this;
 
-    //update current form data before navigating to other form
+    //Find current form definition
     let formIndex =_.findIndex(compScope.state.completeSchema.template, function(sample){
         return sample.form === compScope.state.formNo;
     });
 
     let completeSchema = this.state.completeSchema;
 
+    //Update formData and uiSchema before navigating to other form
     completeSchema.template[formIndex].formData = this.state.formData;
     completeSchema.template[formIndex].uiSchema = this.state.uiSchema;
 

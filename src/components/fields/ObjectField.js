@@ -39,6 +39,7 @@ class ObjectField extends Component {
       let uiSchemaWithRules = uiSchema;
       let evaluateRules = false;
 
+      //Find if rule exists on current property which got changed
       if(options !== null && options !== undefined) {
         if(options.id !== null && options.id !== undefined) {
           const idPaths = options.id.split("_");
@@ -58,6 +59,7 @@ class ObjectField extends Component {
             if(tempRules !== null  && tempRules !== undefined) {
               if(tempRules.publishProperties.indexOf(idPaths[idPaths.length - 1]) >= 0) {
                 evaluateRules = true;
+                //If rules exists, evaluate rules
                 uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, newFormData);
                 this.props.onChange(newFormData, options, uiSchemaWithRules);
               }

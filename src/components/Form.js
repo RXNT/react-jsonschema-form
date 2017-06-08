@@ -23,13 +23,17 @@ export default class Form extends Component {
 
   constructor(props) {
     super(props);
+
+    //Initialize state from props
     this.state = this.getStateFromProps(props);
   }
 
   componentWillReceiveProps(nextProps) {
+    //Initialize state from recieved props
     this.setState(this.getStateFromProps(nextProps));
   }
 
+  //Prepare JSON from properties to update in state
   getStateFromProps(props) {
     const state = this.state || {};
     const schema = "schema" in props ? props.schema : this.props.schema;
@@ -66,6 +70,7 @@ export default class Form extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    //Whetehr compoent to be updated or not whenever state getting changed
     return shouldRender(this, nextProps, nextState);
   }
 
@@ -135,11 +140,6 @@ export default class Form extends Component {
     }
     this.setState({ status: "initial", errors: [], errorSchema: {} });
   };
-
-  onPrevious = () => {
-    event.preventDefault();
-    this.props.onPrevious();
-  }
 
   getRegistry() {
     // For BC, accept passed SchemaField and TitleField props and pass them to

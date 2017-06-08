@@ -1,6 +1,7 @@
 import React from "react";
 import "setimmediate";
 
+//Widgets and Fields Mapping
 const widgetMap = {
   boolean: {
     checkbox: "CheckboxWidget",
@@ -58,6 +59,7 @@ const widgetMap = {
   },
 };
 
+//Load fields and widgets into registry
 const defaultRegistry = {
   fields: require("./components/fields").default,
   widgets: require("./components/widgets").default,
@@ -68,7 +70,7 @@ const defaultRegistry = {
 function executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData) {
   //If Rule Exists
   if(obj[property]["rule"] !== null && obj[property]["rule"] !== undefined) {
-    //Get monitorProperty
+    //Get monitorProperty and its value
     let propValue = formData;
     for (let pathCount = 1; pathCount < stackPaths.length - 1; pathCount++) {
       if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
@@ -83,11 +85,13 @@ function executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData) 
       propValue = propValue[obj[property]["rule"].monitorProperty];
     }
 
+    //Execute actions
     for (let actionCount = 0; actionCount < obj[property]["rule"].actions.length; actionCount++) {
+      //If monitor property value match to formData value
       if(propValue === obj[property]["rule"].actions[actionCount].value) {
-        if(obj[property]["rule"].actions[actionCount].propertyAction === "show") {
+        if(obj[property]["rule"].actions[actionCount].propertyAction === "show") { //Display Control
           tempUiSchema["ui:options"].displayControls = true;
-        } else if(obj[property]["rule"].actions[actionCount].propertyAction === "hide") {
+        } else if(obj[property]["rule"].actions[actionCount].propertyAction === "hide") { //Hide Control
           tempUiSchema["ui:options"].displayControls = false;
         }
       }
@@ -105,23 +109,29 @@ export function evaluateRulesWrapperFunction(obj, stack, uiSchema, formData) {
 
   function evaluateRules(obj, stack) {
     for (var property in obj) {
+
       let stackPaths = (stack + '.' + property).split(".");
       let tempUiSchema = uiSchemaClosure;
 
+      //Get UI Schema of Current Property
       for (let pathCount = 1; pathCount < stackPaths.length; pathCount++) {
         if(tempUiSchema[stackPaths[pathCount]] !== null && tempUiSchema[stackPaths[pathCount]] !== undefined) {
           tempUiSchema = tempUiSchema[stackPaths[pathCount]];
         }
       }
 
+      //If current property type is Object
       if(obj[property]["type"] === 'object') {
         if(tempUiSchema["ui:options"] === null || tempUiSchema["ui:options"] === undefined) {
           tempUiSchema["ui:options"] = {};
         }
 
+        //Evaluate rule if exists at object level
         tempUiSchema = executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData);
+
+        //evaluate controls recursively
         evaluateRules(obj[property].properties, stack + '.' + property);
-      } else {
+      } else { //If current property is control, evaluate rule if exists
         stackPaths[0] = "form";
         tempUiSchema = executeRuleIfExists(obj, property, stackPaths, tempUiSchema, formData);
       }
@@ -133,10 +143,12 @@ export function evaluateRulesWrapperFunction(obj, stack, uiSchema, formData) {
   return uiSchemaClosure;
 }
 
+//Get registry information
 export function getDefaultRegistry() {
   return defaultRegistry;
 }
 
+//Get Widget type based on schema
 export function getWidget(schema, widget, registeredWidgets = {}) {
   const { type } = schema;
 
