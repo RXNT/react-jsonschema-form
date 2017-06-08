@@ -14,7 +14,7 @@ module.exports = {
       ]
     }
   ],
-  document: [
+  template: [
    {
       form: 1,
       title: "Form #1",

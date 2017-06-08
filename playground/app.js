@@ -288,17 +288,17 @@ class App extends Component {
     let completeSchema = samples.Simple;
     const currentFormNo = 1;
 
-    let formIndex =_.findIndex(completeSchema.document, function(sample){
+    let formIndex =_.findIndex(completeSchema.template, function(sample){
         return sample.form === currentFormNo;
     });
 
     // initialize state with Simple data sample
-    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema.document[formIndex];
+    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema.template[formIndex];
     //this.evaluateTemp(schema.properties);
     //uiSchemaClosure = uiSchema;
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
-    completeSchema.document[formIndex].uiSchema = uiSchemaWithRules;
+    completeSchema.template[formIndex].uiSchema = uiSchemaWithRules;
 
     this.state = {
       form: false,
@@ -327,7 +327,7 @@ class App extends Component {
   }
 
   load = (data, formNo) => {
-    let formInfo =_.filter(data.document, function(sample){
+    let formInfo =_.filter(data.template, function(sample){
         return sample.form === formNo;
     });
 
@@ -382,10 +382,10 @@ class App extends Component {
   onFormDataChange = ({ formData }) => {
     let completeSchema = {...this.state.completeSchema};
     let compScope = this;
-    let formIndex =_.findIndex(completeSchema.document, function(formInfo){
+    let formIndex =_.findIndex(completeSchema.template, function(formInfo){
         return formInfo.form === compScope.state.formNo;
     });
-    completeSchema.document[formIndex].formData = formData;
+    completeSchema.template[formIndex].formData = formData;
     this.setState({
       completeSchema,
       formData
@@ -395,14 +395,14 @@ class App extends Component {
   changeForm = (frmNo) => {
     let compScope = this;
 
-    let formIndex =_.findIndex(compScope.state.completeSchema.document, function(sample){
+    let formIndex =_.findIndex(compScope.state.completeSchema.template, function(sample){
         return sample.form === compScope.state.formNo;
     });
 
     let completeSchema = this.state.completeSchema;
 
-    completeSchema.document[formIndex].formData = this.state.formData;
-    completeSchema.document[formIndex].uiSchema = this.state.uiSchema;
+    completeSchema.template[formIndex].formData = this.state.formData;
+    completeSchema.template[formIndex].uiSchema = this.state.uiSchema;
 
     this.load(completeSchema, frmNo);
   }
@@ -429,7 +429,7 @@ class App extends Component {
     let currentFormReadOnly = false;
 
     let compScope = this;
-    let tabs = completeSchema.document.map(function(item, index) {
+    let tabs = completeSchema.template.map(function(item, index) {
       let activeClassName = "";
       if(item.form === compScope.state.formNo) {
         activeClassName = "active";
@@ -444,7 +444,7 @@ class App extends Component {
       let readOnlyForm = false;
 
       if(formRule.length > 0) {
-        const monitorFormInfo =_.filter(completeSchema.document, function(formInfo){
+        const monitorFormInfo =_.filter(completeSchema.template, function(formInfo){
             return formInfo.form === formRule[0].monitorProperty.form;
         });
         let monitorFormFrmData = monitorFormInfo[0].formData;
@@ -506,7 +506,6 @@ class App extends Component {
                   schema={schema}
                   uiSchema={uiSchema}
                   formData={formData}
-                  formLayout={formLayout}
                   onChange={this.onFormDataChange}
                   fields={{ geo: GeoPosition }}
                   validate={validate}
@@ -514,6 +513,7 @@ class App extends Component {
                     console.log(`Touched ${id} with value ${value}`)}
                   transformErrors={transformErrors}
                   onError={log("errors")}
+                  formLayout={formLayout}
                   rules={rules}
                   formDataSrc={formDataSrc}
                   readOnlyForm={currentFormReadOnly}
