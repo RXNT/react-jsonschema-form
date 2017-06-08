@@ -46,7 +46,6 @@ Codemirror.prototype.componentWillReceiveProps = function(nextProps) {
 const log = type => console.log.bind(console, type);
 const fromJson = json => JSON.parse(json);
 const toJson = val => JSON.stringify(val, null, 2);
-const liveValidateSchema = { type: "boolean", title: "Live validation" };
 const cmOptions = {
   theme: "default",
   height: "auto",
@@ -61,125 +60,6 @@ const cmOptions = {
   indentWithTabs: false,
   tabSize: 2,
 };
-const themes = {
-  default: {
-    stylesheet: "//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css",
-  },
-  cerulean: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cerulean/bootstrap.min.css",
-  },
-  cosmo: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cosmo/bootstrap.min.css",
-  },
-  cyborg: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/cyborg/bootstrap.min.css",
-    editor: "blackboard",
-  },
-  darkly: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/darkly/bootstrap.min.css",
-    editor: "mbo",
-  },
-  flatly: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/flatly/bootstrap.min.css",
-    editor: "ttcn",
-  },
-  journal: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/journal/bootstrap.min.css",
-  },
-  lumen: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/lumen/bootstrap.min.css",
-  },
-  paper: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/paper/bootstrap.min.css",
-  },
-  readable: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/readable/bootstrap.min.css",
-  },
-  sandstone: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/sandstone/bootstrap.min.css",
-    editor: "solarized",
-  },
-  simplex: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/simplex/bootstrap.min.css",
-    editor: "ttcn",
-  },
-  slate: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/slate/bootstrap.min.css",
-    editor: "monokai",
-  },
-  spacelab: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/spacelab/bootstrap.min.css",
-  },
-  "solarized-dark": {
-    stylesheet: "//cdn.rawgit.com/aalpern/bootstrap-solarized/master/bootstrap-solarized-dark.css",
-    editor: "dracula",
-  },
-  "solarized-light": {
-    stylesheet: "//cdn.rawgit.com/aalpern/bootstrap-solarized/master/bootstrap-solarized-light.css",
-    editor: "solarized",
-  },
-  superhero: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/superhero/bootstrap.min.css",
-    editor: "dracula",
-  },
-  united: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/united/bootstrap.min.css",
-  },
-  yeti: {
-    stylesheet: "//cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/yeti/bootstrap.min.css",
-    editor: "eclipse",
-  },
-};
-
-class GeoPosition extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { ...props.formData };
-  }
-
-  onChange(name) {
-    return event => {
-      this.setState({ [name]: parseFloat(event.target.value) });
-      setImmediate(() => this.props.onChange(this.state));
-    };
-  }
-
-  render() {
-    const { lat, lon } = this.state;
-    return (
-      <div className="geo">
-        <h3>Hey, I'm a custom component</h3>
-        <p>
-          I'm registered as <code>geo</code> and referenced in
-          <code>uiSchema</code> as the <code>ui:field</code> to use for this
-          schema.
-        </p>
-        <div className="row">
-          <div className="col-sm-6">
-            <label>Latitude</label>
-            <input
-              className="form-control"
-              type="number"
-              value={lat}
-              step="0.00001"
-              onChange={this.onChange("lat")}
-            />
-          </div>
-          <div className="col-sm-6">
-            <label>Longitude</label>
-            <input
-              className="form-control"
-              type="number"
-              value={lon}
-              step="0.00001"
-              onChange={this.onChange("lon")}
-            />
-          </div>
-        </div>
-      </div>
-    );
-  }
-}
 
 class Editor extends Component {
   constructor(props) {
@@ -227,79 +107,29 @@ class Editor extends Component {
   }
 }
 
-class Selector extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { current: "Simple" };
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return shouldRender(this, nextProps, nextState);
-  }
-
-  onLabelClick = label => {
-    return event => {
-      event.preventDefault();
-      this.setState({ current: label });
-      setImmediate(() => this.props.onSelected(samples[label]));
-    };
-  };
-
-  render() {
-    return (
-      <ul className="nav nav-pills">
-        {Object.keys(samples).map((label, i) => {
-          return (
-            <li
-              key={i}
-              role="presentation"
-              className={this.state.current === label ? "active" : ""}>
-              <a href="#" onClick={this.onLabelClick(label)}>
-                {label}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    );
-  }
-}
-
-function ThemeSelector({ theme, select }) {
-  const themeSchema = {
-    type: "string",
-    enum: Object.keys(themes),
-  };
-  return (
-    <Form
-      schema={themeSchema}
-      formData={theme}
-      onChange={({ formData }) => select(formData, themes[formData])}>
-      <div />
-    </Form>
-  );
-}
-
-//let uiSchemaClosure = null;
-
 class App extends Component {
   constructor(props) {
     super(props);
+
+    //Load template JSON
     let completeSchema = samples.Simple;
+
+    //Set default form to show on page initial load as "1"
     const currentFormNo = 1;
 
+    //Find form definition which we need to render on page
     let formIndex =_.findIndex(completeSchema.template, function(sample){
         return sample.form === currentFormNo;
     });
 
-    // initialize state with Simple data sample
     const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema.template[formIndex];
-    //this.evaluateTemp(schema.properties);
-    //uiSchemaClosure = uiSchema;
+
+    //Evaluate form level rules like to display/hide controls
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
     completeSchema.template[formIndex].uiSchema = uiSchemaWithRules;
 
+    // initialize state with form definition which we need to render
     this.state = {
       form: false,
       schema,
@@ -313,13 +143,12 @@ class App extends Component {
       rules,
       formDataSrc,
       formNo: 1,
-      noOfForms: samples.Simple.length,
       completeSchema: completeSchema
     };
   }
 
   componentDidMount() {
-    this.load(this.state.completeSchema, 1);
+    this.load(this.state.completeSchema, this.state.formNo);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -327,29 +156,32 @@ class App extends Component {
   }
 
   load = (data, formNo) => {
-    let formInfo =_.filter(data.template, function(sample){
+    //Filter template by formNo which we need to render
+    //Find form definition which we need to render on page
+    let formIndex =_.findIndex(data.template, function(sample){
         return sample.form === formNo;
     });
 
-    if(formInfo[0].formLayout !== null || formInfo[0].formLayout !== undefined) {
+    if(data.template[formIndex].formLayout !== null || data.template[formIndex].formLayout !== undefined) {
       this.setState({ formLayout: null});
     }
 
-    if(formInfo[0].rules !== null || formInfo[0].rules !== undefined) {
+    if(data.template[formIndex].rules !== null || data.template[formIndex].rules !== undefined) {
       this.setState({ rules: null});
     }
 
     // Reset the ArrayFieldTemplate whenever you load new data
-    const { ArrayFieldTemplate } = formInfo[0];
+    const { ArrayFieldTemplate } = data.template[formIndex];
     // force resetting form component instance
     this.setState({ form: false }, _ =>
-    this.setState({ ...formInfo[0], form: true, ArrayFieldTemplate }));
+    this.setState({ ...data.template[formIndex], form: true, ArrayFieldTemplate }));
 
-    const { schema, uiSchema, rules, formData } = formInfo[0];
+    const { schema, uiSchema, rules, formData } = data.template[formIndex];
 
-    //uiSchemaClosure = uiSchema;
-    //this.evaluateRules(schema.properties, '', rules, formData);
+    //Evaluate rules which are exists on form to be rendered
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
+
+    data.template[formIndex].uiSchema = uiSchemaWithRules;
 
     this.setState({
       completeSchema: data,
@@ -367,25 +199,18 @@ class App extends Component {
 
   onFormLayoutEdited = formLayout => this.setState({ formLayout });
 
-  onThemeSelected = (theme, { stylesheet, editor }) => {
-    this.setState({ theme, editor: editor ? editor : "default" });
-    setImmediate(() => {
-      // Side effect!
-      document.getElementById("theme").setAttribute("href", stylesheet);
-    });
-  };
-
-  setLiveValidate = ({ formData }) => {
-    this.setState({ liveValidate: formData });
-  }
-
   onFormDataChange = ({ formData }) => {
+    //Update formData available in state
     let completeSchema = {...this.state.completeSchema};
     let compScope = this;
+
+    //Find form to which we need to update formData
     let formIndex =_.findIndex(completeSchema.template, function(formInfo){
         return formInfo.form === compScope.state.formNo;
     });
+
     completeSchema.template[formIndex].formData = formData;
+
     this.setState({
       completeSchema,
       formData
@@ -395,6 +220,7 @@ class App extends Component {
   changeForm = (frmNo) => {
     let compScope = this;
 
+    //update current form data before navigating to other form
     let formIndex =_.findIndex(compScope.state.completeSchema.template, function(sample){
         return sample.form === compScope.state.formNo;
     });
@@ -404,6 +230,7 @@ class App extends Component {
     completeSchema.template[formIndex].formData = this.state.formData;
     completeSchema.template[formIndex].uiSchema = this.state.uiSchema;
 
+    //navigate to new form for which user interested
     this.load(completeSchema, frmNo);
   }
 
@@ -422,20 +249,23 @@ class App extends Component {
       rules,
       formDataSrc,
       formNo,
-      noOfForms,
       completeSchema,
     } = this.state;
 
     let currentFormReadOnly = false;
 
     let compScope = this;
+
+    //generate menu items based on no.of forms available in template
     let tabs = completeSchema.template.map(function(item, index) {
       let activeClassName = "";
+
+      //Apply active CSS for selected form
       if(item.form === compScope.state.formNo) {
         activeClassName = "active";
       }
 
-      //Check if document level rule exists for this form
+      //Find template level rules exists for current form
       let formRule =_.filter(completeSchema.rules, function(rule){
           return rule.form === item.form;
       });
@@ -443,11 +273,17 @@ class App extends Component {
       let hideForm = false;
       let readOnlyForm = false;
 
+      //if template level rule exists for this form, processs those rules
       if(formRule.length > 0) {
+        //fetch form definition of monitor property exists
         const monitorFormInfo =_.filter(completeSchema.template, function(formInfo){
             return formInfo.form === formRule[0].monitorProperty.form;
         });
+
+        //get formData of monitor property form
         let monitorFormFrmData = monitorFormInfo[0].formData;
+
+        //Evaluate property value
         let stackPaths = (formRule[0].monitorProperty.propertyName).split(".");
 
         for (let pathCount = 0; pathCount < stackPaths.length; pathCount++) {
@@ -459,12 +295,14 @@ class App extends Component {
           }
         }
 
+        //If property value exists
         if(monitorFormFrmData !== null && monitorFormFrmData !== undefined) {
+          //Execute all rules
           for (let actionCount = 0; actionCount < formRule[0].actions.length; actionCount++) {
             if(monitorFormFrmData === formRule[0].actions[actionCount].value) {
-              if(formRule[0].actions[actionCount].propertyAction === "hide") {
+              if(formRule[0].actions[actionCount].propertyAction === "hide") { //Hide form rule
                 hideForm = true;
-              } else if(formRule[0].actions[actionCount].propertyAction === "disable") {
+              } else if(formRule[0].actions[actionCount].propertyAction === "readonly") { //ReadOnly form rule
                 readOnlyForm = true;
               }
             }
@@ -472,13 +310,14 @@ class App extends Component {
         }
       }
 
+      //If current rendered form is readonly
       if(item.form === compScope.state.formNo) {
         currentFormReadOnly = readOnlyForm;
       }
 
-      if(hideForm) {
+      if(hideForm) { //If form to be hidden, don't render menu item
         return null;
-      } else {
+      } else { //Render menu item
           return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>
           {item.title} {(readOnlyForm && <Glyphicon glyph="lock" />)}
           </button>)
@@ -507,7 +346,6 @@ class App extends Component {
                   uiSchema={uiSchema}
                   formData={formData}
                   onChange={this.onFormDataChange}
-                  fields={{ geo: GeoPosition }}
                   validate={validate}
                   onBlur={(id, value) =>
                     console.log(`Touched ${id} with value ${value}`)}

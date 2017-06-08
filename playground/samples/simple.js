@@ -1,3 +1,23 @@
+/*
+
+module.exports = {
+  rules: [] ---> Template Level Rules. Currently we implemented two actions("hide" & "readonly")
+  template: [ ---> Template is set of Forms
+    {
+      form: 1,              --> Form Number
+      title: "Form #1",     --> Form/Menu/Tab Title
+      schema: {},           --> Represents set of controls to be rendered within form
+      uiSchema: {},         --> Represents configuration of CSS/Widget for each control. Configuration of grid definition and TypeAhead definition
+      formData: {},         --> JSON generated while user changes/enter/select any value in control
+      formLayout: {},       --> Represents positioning of each control on form using react-grid-layout syntax (Referebce: https://github.com/STRML/react-grid-layout)
+      formDataSrc: {},      --> Represents datasource for controls(Ex: TypeAhead) defined under "schema" if required
+      rules: {}             --> Rules at form level
+    }
+  ]
+}
+
+*/
+
 module.exports = {
   rules: [
     {
