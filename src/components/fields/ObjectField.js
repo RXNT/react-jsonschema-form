@@ -171,14 +171,11 @@ class ObjectField extends Component {
       });
 
       let renderedElements = visibleLayouts.map((frmLayout, index) => {
-        let a = Math.floor(100000 + Math.random() * 900000);
-          a = a.toString();
-          a = a.substring(-2);
         return (<div key={frmLayout.i}>{schemaFieldComponents[propKeys[frmLayout.i]]}</div>);
       });
 
 
-      parsedHtml = <ReactGridLayout className='layout' layout={currentObjectFormLayout} cols={12} rowHeight={30} width={1200}>
+      parsedHtml = <ReactGridLayout className='layout' layout={visibleLayouts} cols={12} rowHeight={30} width={1200}>
                           {renderedElements}
                       </ReactGridLayout>;
     } else {
