@@ -6,8 +6,11 @@ const _ = require('lodash');
 import "codemirror/mode/javascript/javascript";
 
 import { shouldRender, evaluateRulesWrapperFunction } from "../src/utils";
-import { samples } from "./samples";
+//import { samples } from "./samples";
 import Form from "../src";
+import appConfig from './app.config';
+import appConstants from './app.constants';
+const apiProxy = require('./api-proxy.service');
 
 // Import a few CodeMirror themes; these are used to match alternative
 // bootstrap ones.
@@ -111,83 +114,100 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    //Load template JSON
-    let completeSchema = samples.Simple;
-
-    //Set default form to show on page initial load as "1"
-    const currentFormNo = 1;
-
-    //Find form definition which we need to render on page
-    let formIndex =_.findIndex(completeSchema.template, function(sample){
-        return sample.form === currentFormNo;
-    });
-
-    const { schema, uiSchema, formData, validate, formLayout, rules, formDataSrc } = completeSchema.template[formIndex];
-
-    //Evaluate form level rules like to display/hide controls
-    let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
-
-    completeSchema.template[formIndex].uiSchema = uiSchemaWithRules;
-
-    // initialize state with form definition which we need to render
     this.state = {
-      form: false,
-      schema,
-      uiSchema: uiSchemaWithRules,
-      formData,
-      validate,
-      editor: "default",
-      theme: "default",
-      liveValidate: true,
-      formLayout,
-      rules,
-      formDataSrc,
-      formNo: 1,
-      completeSchema: completeSchema
     };
   }
 
-  componentDidMount() {
-    this.load(this.state.completeSchema, this.state.formNo);
+  componentWillMount() {
+    //Set default form to show on page initial load as "1"
+    const currentFormNo = 1;
+
+    let serviceRequest = {
+       "formNo": currentFormNo
+    };
+
+    let compScope = this;
+
+    apiProxy.post(appConfig.templateApiURL + appConstants.templateApiRoutes.getTemplateApiRoute, serviceRequest)
+      .then(function (response) {
+
+        let formDataSrcInfo = null;
+
+        const { schema, uiSchema, formData, validate, formLayout, rules } = response.templateInfo.templateschema.template[0];
+
+        //Evaluate form level rules like to display/hide controls
+        let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
+
+        response.templateInfo.templateschema.template[0].uiSchema = uiSchemaWithRules;
+
+        if(response.templateInfo.templatedataSources.length === 1) {
+          formDataSrcInfo = response.templateInfo.templatedataSources[0];
+        }
+
+        // initialize state with form definition which we need to render
+        compScope.setState({
+          form: false,
+          schema,
+          uiSchema: uiSchemaWithRules,
+          formData,
+          validate,
+          editor: "default",
+          theme: "default",
+          liveValidate: true,
+          formLayout,
+          rules,
+          formDataSrc: formDataSrcInfo,
+          formNo: currentFormNo,
+          response
+        });
+      }
+    );
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shouldRender(this, nextProps, nextState);
   }
 
-  load = (data, formNo) => {
-    //Filter template by formNo which we need to render
-    //Find form definition which we need to render on page
-    let formIndex =_.findIndex(data.template, function(sample){
-        return sample.form === formNo;
-    });
+  load = (response, formNo) => {
 
-    if(data.template[formIndex].formLayout !== null || data.template[formIndex].formLayout !== undefined) {
+    if(response.templateInfo.templateschema.template[0].formLayout !== null ||
+        response.templateInfo.templateschema.template[0].formLayout !== undefined) {
       this.setState({ formLayout: null});
     }
 
-    if(data.template[formIndex].rules !== null || data.template[formIndex].rules !== undefined) {
+    if(response.templateInfo.templateschema.template[0].rules !== null ||
+          response.templateInfo.templateschema.template[0].rules !== undefined) {
       this.setState({ rules: null});
     }
 
     // Reset the ArrayFieldTemplate whenever you load new data
-    const { ArrayFieldTemplate } = data.template[formIndex];
+    const { ArrayFieldTemplate } = response.templateInfo.templateschema.template[0];
     // force resetting form component instance
     this.setState({ form: false }, _ =>
-    this.setState({ ...data.template[formIndex], form: true, ArrayFieldTemplate }));
+    this.setState({ ...response.templateInfo.templateschema.template[0], form: true, ArrayFieldTemplate }));
 
-    const { schema, uiSchema, rules, formData } = data.template[formIndex];
+    const { schema, uiSchema, rules, formData, formLayout } = response.templateInfo.templateschema.template[0];
 
     //Evaluate rules which are exists on form to be rendered
     let uiSchemaWithRules = evaluateRulesWrapperFunction(schema.properties, '', uiSchema, formData);
 
-    data.template[formIndex].uiSchema = uiSchemaWithRules;
+    response.templateInfo.templateschema.template[0].uiSchema = uiSchemaWithRules;
+
+    let formDataSource = null;
+
+    if(response.templateInfo.templatedataSources.length === 1) {
+      formDataSource = response.templateInfo.templatedataSources[0];
+    }
 
     this.setState({
-      completeSchema: data,
+      response,
+      schema,
+      formData,
+      formLayout,
       uiSchema: uiSchemaWithRules,
       rules,
-      formNo: formNo
+      formNo: formNo,
+      formDataSrc: formDataSource,
     });
   };
 
@@ -199,23 +219,53 @@ class App extends Component {
 
   onFormLayoutEdited = formLayout => this.setState({ formLayout });
 
-  onFormDataChange = ({ formData, uiSchema }) => {
-
-    //Update formData available in state
-    let completeSchema = {...this.state.completeSchema};
+  onFormDataChange = ({ formData, uiSchema, formDataSrc }) => {
     let compScope = this;
 
-    //Find current form definition
-    let formIndex =_.findIndex(completeSchema.template, function(formInfo){
-        return formInfo.form === compScope.state.formNo;
-    });
+    //Update formData available in state
+    let response = {...this.state.response};
 
     //Update formData and uiSchema
-    completeSchema.template[formIndex].formData = formData;
-    completeSchema.template[formIndex].uiSchema = uiSchema;
+    response.templateInfo.templateschema.template[0].formData = formData;
+    response.templateInfo.templateschema.template[0].uiSchema = uiSchema;
+
+    if(response.templateInfo.templatedataSources.length === 1) {
+      response.templateInfo.templatedataSources[0] = formDataSrc;
+    }
+
+    //Update template level rules monitorProperty value
+    if(response.templateInfo.templateschema.rules !== null &&
+          response.templateInfo.templateschema.rules !== undefined) {
+      if(response.templateInfo.templateschema.rules.length > 0) {
+        let rules = _.filter(response.templateInfo.templateschema.rules, function(ruleInfo) {
+          return ruleInfo.monitorProperty.form === compScope.state.formNo;
+        });
+
+        if(rules.length > 0) {
+          for (let ruleCount = 0; ruleCount < rules.length ; ruleCount++) {
+            const stackPaths = rules[ruleCount].monitorProperty.propertyName.split(".");
+
+            let propValue = {...formData};
+            for (let pathCount = 0; pathCount < stackPaths.length - 1; pathCount++) {
+              if(propValue[stackPaths[pathCount]] !== null && propValue[stackPaths[pathCount]] !== undefined) {
+                propValue = propValue[stackPaths[pathCount]];
+              } else {
+                propValue = null;
+                break;
+              }
+            }
+
+            if(propValue !== null) {
+              propValue = propValue[stackPaths[stackPaths.length - 1]];
+              rules[ruleCount].monitorProperty.propertyValue = propValue;
+            }
+          }
+        }
+      }
+    }
 
     this.setState({
-      completeSchema,
+      response,
       uiSchema,
       formData
     });
@@ -224,19 +274,32 @@ class App extends Component {
   changeForm = (frmNo) => {
     let compScope = this;
 
-    //Find current form definition
-    let formIndex =_.findIndex(compScope.state.completeSchema.template, function(sample){
-        return sample.form === compScope.state.formNo;
-    });
-
-    let completeSchema = this.state.completeSchema;
-
     //Update formData and uiSchema before navigating to other form
-    completeSchema.template[formIndex].formData = this.state.formData;
-    completeSchema.template[formIndex].uiSchema = this.state.uiSchema;
+    this.state.response.templateInfo.templateschema.template[0].formData = this.state.formData;
+    this.state.response.templateInfo.templateschema.template[0].uiSchema = this.state.uiSchema;
 
-    //navigate to new form for which user interested
-    this.load(completeSchema, frmNo);
+    //save current form information to database before navigating to other form
+    let saveRequest = {
+       templateInfo: this.state.response.templateInfo,
+       formNo: this.state.formNo
+    };
+    console.log(saveRequest);
+    apiProxy.post(appConfig.templateApiURL + appConstants.templateApiRoutes.saveTemplateApiRoute, saveRequest)
+      .then(function (response) {
+        //If saved Success fully
+        if(response.ValidationStatus === 'Success') {
+          //navigate to new form for which user interested
+          let serviceRequest = {
+             "formNo": frmNo
+          };
+          apiProxy.post(appConfig.templateApiURL + appConstants.templateApiRoutes.getTemplateApiRoute, serviceRequest)
+            .then(function (data) {
+              compScope.load(data, frmNo);
+            }
+          );
+        }
+      }
+    );
   }
 
   render() {
@@ -255,56 +318,37 @@ class App extends Component {
       formDataSrc,
       formNo,
       completeSchema,
+      response,
     } = this.state;
 
+    let tabs = [];
     let currentFormReadOnly = false;
 
-    let compScope = this;
+    if(response !== null && response !== undefined) {
+      let compScope = this;
 
-    //generate menu items based on no.of forms available in template
-    let tabs = completeSchema.template.map(function(item, index) {
-      let activeClassName = "";
+      //generate menu items based on no.of forms available in template
+      tabs = response.formTitles.map(function(item, index) {
+        let activeClassName = "";
 
-      //Apply active CSS for selected form
-      if(item.form === compScope.state.formNo) {
-        activeClassName = "active";
-      }
-
-      //Find template level rules exists for current form
-      let formRule =_.filter(completeSchema.rules, function(rule){
-          return rule.form === item.form;
-      });
-
-      let hideForm = false;
-      let readOnlyForm = false;
-
-      //if template level rule exists for this form, processs those rules
-      if(formRule.length > 0) {
-        //fetch form definition of monitor property exists
-        const monitorFormInfo =_.filter(completeSchema.template, function(formInfo){
-            return formInfo.form === formRule[0].monitorProperty.form;
-        });
-
-        //get formData of monitor property form
-        let monitorFormFrmData = monitorFormInfo[0].formData;
-
-        //Evaluate property value
-        let stackPaths = (formRule[0].monitorProperty.propertyName).split(".");
-
-        for (let pathCount = 0; pathCount < stackPaths.length; pathCount++) {
-          if(monitorFormFrmData[stackPaths[pathCount]] !== null && monitorFormFrmData[stackPaths[pathCount]] !== undefined) {
-            monitorFormFrmData = monitorFormFrmData[stackPaths[pathCount]];
-          } else {
-            monitorFormFrmData = null;
-            break;
-          }
+        //Apply active CSS for selected form
+        if(item.form === compScope.state.formNo) {
+          activeClassName = "active";
         }
 
-        //If property value exists
-        if(monitorFormFrmData !== null && monitorFormFrmData !== undefined) {
+        //Find template level rules exists for current form
+        let formRule =_.filter(response.templateInfo.templateschema.rules, function(rule){
+            return rule.form === item.form;
+        });
+
+        let hideForm = false;
+        let readOnlyForm = false;
+
+        //if template level rule exists for this form, processs those rules
+        if(formRule.length > 0) {
           //Execute all rules
           for (let actionCount = 0; actionCount < formRule[0].actions.length; actionCount++) {
-            if(monitorFormFrmData === formRule[0].actions[actionCount].value) {
+            if(formRule[0].monitorProperty.propertyValue === formRule[0].actions[actionCount].value) {
               if(formRule[0].actions[actionCount].propertyAction === "hide") { //Hide form rule
                 hideForm = true;
               } else if(formRule[0].actions[actionCount].propertyAction === "readonly") { //ReadOnly form rule
@@ -313,21 +357,21 @@ class App extends Component {
             }
           }
         }
-      }
 
-      //If current rendered form is readonly
-      if(item.form === compScope.state.formNo) {
-        currentFormReadOnly = readOnlyForm;
-      }
+        //If current rendered form is readonly
+        if(item.form === compScope.state.formNo) {
+          currentFormReadOnly = readOnlyForm;
+        }
 
-      if(hideForm) { //If form to be hidden, don't render menu item
-        return null;
-      } else { //Render menu item
-          return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>
-          {item.title} {(readOnlyForm && <Glyphicon glyph="lock" />)}
-          </button>)
-      }
-    });
+        if(hideForm) { //If form to be hidden, don't render menu item
+          return null;
+        } else { //Render menu item
+            return (<button key={index} className={"tablinks " + activeClassName} onClick={compScope.changeForm.bind(this, item.form)}>
+            {item.title} {(readOnlyForm && <Glyphicon glyph="lock" />)}
+            </button>)
+        }
+      });
+    }
 
     return (
       <div className="container-fluid">
@@ -343,7 +387,7 @@ class App extends Component {
         </div>
         <div className="row">
           <div className="col-sm-8">
-              {this.state.form &&
+              {this.state.response &&
                 <Form
                   ArrayFieldTemplate={ArrayFieldTemplate}
                   liveValidate={liveValidate}
@@ -363,7 +407,7 @@ class App extends Component {
                 />}
           </div>
         </div>
-        <div className="row">
+        {response && <div className="row">
           <div className="col-sm-12">
             <Editor
               title="JSONSchema"
@@ -371,7 +415,6 @@ class App extends Component {
               code={toJson(schema)}
               onChange={this.onSchemaEdited}
             />
-
             <div className="row">
               <div className="col-sm-4">
                 <Editor
@@ -399,8 +442,9 @@ class App extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div>}
       </div>
+
     );
   }
 }

@@ -36,6 +36,7 @@ class ObjectField extends Component {
       const newFormData = { ...this.props.formData, [name]: value };
       let uiSchema = {...this.props.uiSchema};
       let schema = {...this.props.schema};
+      let formDataSrc = {...this.props.formDataSrc};
       let uiSchemaWithRules = uiSchema;
       let evaluateRules = false;
 
@@ -69,7 +70,7 @@ class ObjectField extends Component {
       }
 
       if(!evaluateRules) {
-        this.props.onChange(newFormData, options, uiSchemaWithRules);
+        this.props.onChange(newFormData, options, uiSchemaWithRules, formDataSrc);
       }
     };
   };

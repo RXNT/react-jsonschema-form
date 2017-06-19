@@ -27,13 +27,15 @@ function TypeAheadWidget(props) {
     return onChange(selectedRows);
   };
 
-  let typeAheadOptions = [];
+  let dataSourceId = "";
 
   if(parentName !== undefined) {
-    typeAheadOptions = formDataSrc[parentName][name];
+    dataSourceId = formDataSrc.dataSourceConfig.properties[parentName][name];
   } else {
-    typeAheadOptions = formDataSrc[name];
+    dataSourceId = formDataSrc.dataSourceConfig.properties[name];
   }
+
+  let typeAheadOptions = formDataSrc.dataSourceConfig.dataSources[dataSourceId].data;
 
   let classNames = "form-control";
   if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
