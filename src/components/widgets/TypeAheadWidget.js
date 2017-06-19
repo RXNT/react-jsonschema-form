@@ -28,14 +28,17 @@ function TypeAheadWidget(props) {
   };
 
   let dataSourceId = "";
+  let typeAheadOptions = [];
 
-  if(parentName !== undefined) {
-    dataSourceId = formDataSrc.dataSourceConfig.properties[parentName][name];
-  } else {
-    dataSourceId = formDataSrc.dataSourceConfig.properties[name];
+  if(formDataSrc !== null) {
+    if(parentName !== undefined) {
+      dataSourceId = formDataSrc.dataSourceConfig.properties[parentName][name];
+    } else {
+      dataSourceId = formDataSrc.dataSourceConfig.properties[name];
+    }
+
+    typeAheadOptions = formDataSrc.dataSourceConfig.dataSources[dataSourceId].data;
   }
-
-  let typeAheadOptions = formDataSrc.dataSourceConfig.dataSources[dataSourceId].data;
 
   let classNames = "form-control";
   if(options.controlClassNames !== "" && options.controlClassNames !== null && options.controlClassNames !== undefined) {
@@ -46,12 +49,12 @@ function TypeAheadWidget(props) {
 
   return (
     <div className={classNames}>
-      <Typeahead disabled={readOnlyForm}
+      {<Typeahead disabled={readOnlyForm}
           labelKey={typeaheadDefinition.labelKey}
           options={typeAheadOptions}
           placeholder={typeaheadDefinition.placeholder}
           onChange={handleChange}
-        />
+        />}
     </div>
   );
 }
