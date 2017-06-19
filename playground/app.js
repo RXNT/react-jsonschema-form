@@ -113,8 +113,8 @@ class Editor extends Component {
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
+      loading: false
     };
   }
 
@@ -127,6 +127,10 @@ class App extends Component {
     };
 
     let compScope = this;
+
+    this.setState({
+      loading: true
+    });
 
     apiProxy.post(appConfig.templateApiURL + appConstants.templateApiRoutes.getTemplateApiRoute, serviceRequest)
       .then(function (response) {
@@ -158,7 +162,8 @@ class App extends Component {
           rules,
           formDataSrc: formDataSrcInfo,
           formNo: currentFormNo,
-          response
+          response,
+          loading: false
         });
       }
     );
@@ -208,6 +213,7 @@ class App extends Component {
       rules,
       formNo: formNo,
       formDataSrc: formDataSource,
+      loading: false
     });
   };
 
@@ -278,12 +284,16 @@ class App extends Component {
     this.state.response.templateInfo.templateschema.template[0].formData = this.state.formData;
     this.state.response.templateInfo.templateschema.template[0].uiSchema = this.state.uiSchema;
 
+    this.setState({
+      loading: true
+    });
+
     //save current form information to database before navigating to other form
     let saveRequest = {
        templateInfo: this.state.response.templateInfo,
        formNo: this.state.formNo
     };
-    console.log(saveRequest);
+
     apiProxy.post(appConfig.templateApiURL + appConstants.templateApiRoutes.saveTemplateApiRoute, saveRequest)
       .then(function (response) {
         //If saved Success fully
@@ -319,6 +329,7 @@ class App extends Component {
       formNo,
       completeSchema,
       response,
+      loading,
     } = this.state;
 
     let tabs = [];
@@ -379,6 +390,11 @@ class App extends Component {
           <h4>Dynamic Form</h4>
         </div>
         <div className="row">
+            {
+              this.state.loading &&
+              <div className="loading">
+              </div>
+            }
             <div className="col-sm-12">
               <div className="tab">
                 {tabs}
